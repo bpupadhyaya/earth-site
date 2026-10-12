@@ -69,12 +69,12 @@ const markSvg = `<img class="mark" src="${url('assets/mark.svg')}" width="32" he
 const THEMES = [
   ['nutrisize', 'Nutrisize', 'Fresh green, the default', '#ffffff', '#2f9e68'],
   ['arcforge', 'Arcforge', 'Violet and teal on ink', '#0d0b1f', '#7c5cff'],
+  ['forest', 'Forest', 'Soft green on dark', '#14201a', '#8fd49a'],
   ['auto', 'Auto', 'Follows your device, light or dark', '#f6f2ea', '#171b1e'],
   ['light', 'Light', 'Warm paper, easy on the eyes', '#f6f2ea', '#1f6f5f'],
   ['dark', 'Dark', 'Warm dark, low glare', '#171b1e', '#78c7b2'],
   ['sepia', 'Sepia', 'Book-paper warmth', '#f4ecd8', '#8a4b12'],
   ['ocean', 'Ocean', 'Deep blue with sky accents', '#0f1f2e', '#6cc4ee'],
-  ['forest', 'Forest', 'Soft green on dark', '#14201a', '#8fd49a'],
   ['contrast', 'High contrast', 'Maximum legibility', '#fffdf5', '#0b3fa8'],
 ];
 const swatch = (a, b) => `<span class="sw" style="background:linear-gradient(135deg,${a} 50%,${b} 50%)" aria-hidden="true"></span>`;
