@@ -1,0 +1,104 @@
+[
+  { "slug": "land", "title": "Land", "blurb": "Mountains, volcanoes, deserts and the ground beneath us.",
+    "topics": [
+      { "slug": "mountains", "title": "Mountains", "blurb": "Ranges, peaks and how they rise." },
+      { "slug": "volcanoes", "title": "Volcanoes", "blurb": "Where the Earth opens, and why." },
+      { "slug": "deserts", "title": "Deserts", "blurb": "Hot, cold and coastal deserts of every continent." },
+      { "slug": "caves", "title": "Caves", "blurb": "Karst, lava tubes and the world underground." },
+      { "slug": "earthquakes", "title": "Earthquakes", "blurb": "Faults, plates and shaking ground." },
+      { "slug": "glaciers", "title": "Glaciers", "blurb": "Rivers of ice and the valleys they carve." },
+      { "slug": "islands", "title": "Islands", "blurb": "Volcanic, coral and continental islands." },
+      { "slug": "soils", "title": "Soils", "blurb": "The thin living skin that feeds the world." }
+    ] },
+  { "slug": "water", "title": "Water", "blurb": "Oceans, rivers, lakes, ice and everything that flows.",
+    "topics": [
+      { "slug": "oceans", "title": "Oceans", "blurb": "Five oceans, their currents and depths." },
+      { "slug": "rivers", "title": "Rivers", "blurb": "From source to sea on every continent." },
+      { "slug": "lakes", "title": "Lakes", "blurb": "The largest, deepest and oldest lakes." },
+      { "slug": "tides", "title": "Tides", "blurb": "The Moon, the Sun and the rhythm of the shore." },
+      { "slug": "waterfalls", "title": "Waterfalls", "blurb": "Height, volume and the places they fall." },
+      { "slug": "coral-reefs", "title": "Coral reefs", "blurb": "Living structures you can see from space." },
+      { "slug": "groundwater", "title": "Groundwater", "blurb": "Aquifers, springs and hidden water." },
+      { "slug": "sea-ice", "title": "Sea ice and icebergs", "blurb": "Frozen seas at both ends of the planet." }
+    ] },
+  { "slug": "sky", "title": "Sky", "blurb": "Weather, climate, winds and light.",
+    "topics": [
+      { "slug": "weather", "title": "Weather", "blurb": "Reading the sky, day by day." },
+      { "slug": "clouds", "title": "Clouds", "blurb": "Ten kinds of cloud and what they tell you." },
+      { "slug": "climate", "title": "Climate", "blurb": "Zones, seasons and long-term patterns." },
+      { "slug": "winds", "title": "Winds", "blurb": "Trade winds, jet streams and local breezes." },
+      { "slug": "storms", "title": "Storms", "blurb": "Thunderstorms, cyclones and monsoons." },
+      { "slug": "auroras", "title": "Auroras", "blurb": "Lights at the edges of the world." },
+      { "slug": "atmosphere", "title": "Atmosphere", "blurb": "The layers of air above us." },
+      { "slug": "seasons", "title": "Seasons", "blurb": "Why the year turns, everywhere differently." }
+    ] },
+  { "slug": "life", "title": "Life", "blurb": "Birds, mammals, forests, insects and the living ocean.",
+    "topics": [
+      { "slug": "birds", "title": "Birds", "blurb": "Species, songs, flight and migration." },
+      { "slug": "mammals", "title": "Mammals", "blurb": "From shrews to whales." },
+      { "slug": "forests", "title": "Forests", "blurb": "Rainforest, taiga and everything between." },
+      { "slug": "insects", "title": "Insects", "blurb": "The most numerous animals on Earth." },
+      { "slug": "ocean-life", "title": "Ocean life", "blurb": "Plankton to blue whales." },
+      { "slug": "migrations", "title": "Migrations", "blurb": "The great journeys of animals." },
+      { "slug": "biomes", "title": "Biomes", "blurb": "The world's great living regions." },
+      { "slug": "fungi-and-plants", "title": "Fungi and plants", "blurb": "Trees, flowers, mosses and mushrooms." }
+    ] },
+  { "slug": "people", "title": "People", "blurb": "Countries, cities, languages, food and craft.",
+    "topics": [
+      { "slug": "countries", "title": "Countries", "blurb": "Every country, its shape and its place." },
+      { "slug": "capitals", "title": "Capitals", "blurb": "Capital cities of the world." },
+      { "slug": "cities", "title": "Cities", "blurb": "Where most people live." },
+      { "slug": "flags", "title": "Flags", "blurb": "Colours, symbols and their stories." },
+      { "slug": "languages", "title": "Languages", "blurb": "Thousands of ways to speak." },
+      { "slug": "food", "title": "Food", "blurb": "What the world eats and where it grows." },
+      { "slug": "music-and-craft", "title": "Music and craft", "blurb": "Instruments, textiles and making." },
+      { "slug": "landmarks", "title": "Landmarks", "blurb": "Places people travel to see." }
+    ] },
+  { "slug": "time", "title": "Time", "blurb": "Earth's history from the first rocks to today.",
+    "topics": [
+      { "slug": "geologic-eras", "title": "Geologic eras", "blurb": "Four and a half billion years in order." },
+      { "slug": "fossils", "title": "Fossils", "blurb": "Life written in stone." },
+      { "slug": "continental-drift", "title": "Continental drift", "blurb": "How the map keeps moving." },
+      { "slug": "ice-ages", "title": "Ice ages", "blurb": "When ice reshaped the land." },
+      { "slug": "mass-extinctions", "title": "Mass extinctions", "blurb": "Five times life nearly ended." },
+      { "slug": "human-journey", "title": "The human journey", "blurb": "How people spread across the planet." }
+    ] },
+  { "slug": "fly", "title": "Fly", "blurb": "Learn to fly like a bird, then pilot aircraft, helicopters and spacecraft over the real Earth.",
+    "topics": [
+      { "slug": "bird-flight", "title": "Bird flight", "blurb": "Flap, glide, soar and land on the spot." },
+      { "slug": "gliding", "title": "Gliding", "blurb": "Thermals, ridge lift and energy." },
+      { "slug": "aircraft", "title": "Aircraft", "blurb": "Light aircraft: take-off, pattern, landing." },
+      { "slug": "helicopters", "title": "Helicopters", "blurb": "Hover, translate, autorotate." },
+      { "slug": "airliners", "title": "Airliners", "blurb": "Long-haul navigation across time zones." },
+      { "slug": "space", "title": "Space", "blurb": "Orbit, re-entry and landing on target." },
+      { "slug": "emergency-landing", "title": "Emergency landing", "blurb": "Find and reach a safe place, anywhere, offline." },
+      { "slug": "navigation", "title": "Navigation", "blurb": "Headings, great circles and real airports." }
+    ] },
+  { "slug": "explore", "title": "Explore", "blurb": "The globe, maps, day and night, and the sky above any place.",
+    "topics": [
+      { "slug": "globe", "title": "Globe", "blurb": "Spin the Earth and look closely." },
+      { "slug": "maps", "title": "Maps", "blurb": "Projections, scales and reading maps." },
+      { "slug": "time-zones", "title": "Time zones", "blurb": "What time it is, everywhere." },
+      { "slug": "day-and-night", "title": "Day and night", "blurb": "The terminator line, live." },
+      { "slug": "sun-and-moon", "title": "Sun and Moon", "blurb": "Rise, set, phase and eclipse for any place." },
+      { "slug": "stars-from-earth", "title": "Stars from Earth", "blurb": "The night sky from where you stand." },
+      { "slug": "distances", "title": "Distances", "blurb": "How far, which way, how long." },
+      { "slug": "coordinates", "title": "Coordinates", "blurb": "Latitude, longitude and finding places." }
+    ] },
+  { "slug": "measure", "title": "Measure", "blurb": "Almanacs, tables and tools about the planet.",
+    "topics": [
+      { "slug": "almanac", "title": "Almanac", "blurb": "Sunrise, sunset, tides and seasons for any place." },
+      { "slug": "units", "title": "Units and scales", "blurb": "Metres to miles, Richter to Saffir-Simpson." },
+      { "slug": "records", "title": "Records", "blurb": "Highest, deepest, hottest, oldest." },
+      { "slug": "converters", "title": "Converters", "blurb": "Temperature, pressure, distance, area." }
+    ] },
+  { "slug": "care", "title": "Care", "blurb": "Ecosystems, conservation, energy and water.",
+    "topics": [
+      { "slug": "ecosystems", "title": "Ecosystems", "blurb": "How living things depend on each other." },
+      { "slug": "conservation", "title": "Conservation", "blurb": "Protected places and species." },
+      { "slug": "energy", "title": "Energy", "blurb": "Sun, wind, water and the fuels we burn." },
+      { "slug": "water-use", "title": "Water use", "blurb": "Where fresh water goes." },
+      { "slug": "recycling", "title": "Recycling and waste", "blurb": "What happens after we throw it away." },
+      { "slug": "biodiversity", "title": "Biodiversity", "blurb": "Why variety keeps the planet working." }
+    ] }
+]

@@ -1,0 +1,219 @@
+#!/usr/bin/env node
+// Earth site builder. No dependencies. Reads content/ + data/, writes _site/.
+// Scales to tens of thousands of projects: static pages, paginated lists, sharded catalog and search index, sitemap index.
+import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync, readdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = dirname(fileURLToPath(import.meta.url));
+const OUT = join(ROOT, '_site');
+const site = JSON.parse(readFileSync(join(ROOT, 'content/site.json'), 'utf8'));
+const domains = JSON.parse(readFileSync(join(ROOT, 'content/domains.json'), 'utf8'));
+const projects = loadProjects();
+const BASE = site.basePath || '/';
+const PAGE_SIZE = 100;
+const DOCS_PER_CHUNK = 500;
+const now = new Date().toISOString().slice(0, 10);
+
+function loadProjects() {
+  const dir = join(ROOT, 'data/catalog');
+  const files = existsSync(dir) ? readdirSync(dir).filter(f => f.endsWith('.json')) : [];
+  const all = [];
+  for (const f of files) { const arr = JSON.parse(readFileSync(join(dir, f), 'utf8')); if (Array.isArray(arr)) all.push(...arr); }
+  const seen = new Set();
+  return all.filter(p => { if (!p.id || seen.has(p.id)) return false; seen.add(p.id); return true; })
+            .sort((a, b) => a.title.localeCompare(b.title));
+}
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const url = p => BASE + p.replace(/^\//, '');
+function write(rel, html) { const f = join(OUT, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, html); }
+
+const topicIndex = new Map(); // slug -> {topic, domain}
+for (const d of domains) for (const t of d.topics) topicIndex.set(t.slug, { topic: t, domain: d });
+const byDomain = new Map(domains.map(d => [d.slug, []]));
+const byTopic = new Map([...topicIndex.keys()].map(k => [k, []]));
+for (const p of projects) {
+  if (byDomain.has(p.domain)) byDomain.get(p.domain).push(p);
+  for (const t of p.topics || []) if (byTopic.has(t)) byTopic.get(t).push(p);
+}
+
+const globeSvg = `<svg viewBox="0 0 200 200" role="img" aria-label="A stylised globe" class="globe" xmlns="http://www.w3.org/2000/svg">
+<defs><radialGradient id="g" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#9fd8c7"/><stop offset=".55" stop-color="#2f8c77"/><stop offset="1" stop-color="#174f44"/></radialGradient></defs>
+<circle cx="100" cy="100" r="92" fill="url(#g)"/>
+<g fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.2">
+<ellipse cx="100" cy="100" rx="92" ry="34"/><ellipse cx="100" cy="100" rx="92" ry="68"/><line x1="8" y1="100" x2="192" y2="100"/>
+<ellipse cx="100" cy="100" rx="34" ry="92"/><ellipse cx="100" cy="100" rx="68" ry="92"/><line x1="100" y1="8" x2="100" y2="192"/></g>
+<g fill="rgba(214,176,112,.85)"><path d="M62 58c10-8 24-6 30 2 4 6-2 12-8 16-8 5-16 4-22-2-5-5-6-11 0-16z"/><path d="M118 72c8-4 18 0 20 8 2 9-4 16-12 18-9 2-16-3-17-11-1-7 3-12 9-15z"/><path d="M80 118c12-4 24 2 26 12 1 9-7 14-16 15-11 1-19-4-20-12-1-7 3-12 10-15z"/></g>
+</svg>`;
+const markSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#2f8c77"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" stroke="rgba(255,255,255,.6)" stroke-width="1.2" fill="none"/></svg>`;
+
+function layout({ title, description, body, path = '', current = '' }) {
+  const fullTitle = path ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`;
+  const canonical = site.url.replace(/\/$/, '') + '/' + path;
+  return `<!doctype html>
+<html lang="${site.language}" data-base="${BASE}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(fullTitle)}</title>
+<meta name="description" content="${esc(description || site.description)}">
+<link rel="canonical" href="${esc(canonical)}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f2ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171b1e" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="${esc(fullTitle)}"><meta property="og:description" content="${esc(description || site.description)}"><meta property="og:type" content="website"><meta property="og:url" content="${esc(canonical)}">
+<link rel="icon" href="${url('assets/icon.svg')}" type="image/svg+xml">
+<link rel="stylesheet" href="${url('assets/site.css')}">
+<script>(function(){try{var t=localStorage.getItem('earth.theme');if(t)document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('earth.size');if(s)document.documentElement.setAttribute('data-size',s);}catch(e){}})();</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+<a class="brand" href="${url('')}">${markSvg}<span>${esc(site.name)}</span></a>
+<nav class="nav" aria-label="Main">${site.nav.map(n => `<a href="${url(n.href)}"${current === n.href ? ' aria-current="page"' : ''}>${esc(n.label)}</a>`).join('')}</nav>
+<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button><button class="ctl" id="theme-ctl" type="button" aria-label="Change colour theme" title="Theme">Auto</button></div>
+</div></header>
+<main id="main">${body}</main>
+<footer class="site-footer"><div class="wrap">
+<div>${esc(site.name)}: ${esc(site.tagline)}. Facts are sourced and images are credited on every project page.</div>
+<div><a href="${url('about/')}">About</a> · <a href="${url('sitemap.xml')}">Sitemap</a> · Updated ${now}</div>
+</div></footer>
+<script src="${url('assets/site.js')}" defer></script>
+</body></html>`;
+}
+
+const searchForm = (autofocus = false) => `<form class="search" id="search-form" role="search" action="${url('search/')}" method="get">
+<label class="skip" for="q">Search projects and topics</label>
+<input id="q" name="q" type="search" placeholder="Search a place, animal, topic or game…" autocomplete="off"${autofocus ? ' autofocus' : ''}>
+<button class="btn" type="submit">Search</button></form>
+<div class="results-status" id="search-status" aria-live="polite"></div>
+<ul class="results" id="search-results"></ul>`;
+
+const projectLi = p => `<li><a href="${url(`projects/${p.id}/`)}">${esc(p.title)}</a> <span class="badge${p.status === 'live' ? '' : ' badge--coming'}">${esc(p.status || 'coming')}</span><p class="blurb">${esc(p.blurb)}</p></li>`;
+
+function paginate(items, basePath, renderPage) {
+  const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  for (let i = 0; i < pages; i++) {
+    const slice = items.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE);
+    const pager = pages > 1 ? `<nav class="pager" aria-label="Pages">${Array.from({ length: pages }, (_, n) => n === i ? `<span aria-current="page">${n + 1}</span>` : `<a href="${url(n === 0 ? basePath : `${basePath}page/${n + 1}/`)}">${n + 1}</a>`).join('')}</nav>` : '';
+    write(join(i === 0 ? basePath : `${basePath}page/${i + 1}/`, 'index.html'), renderPage(slice, pager, i + 1, pages));
+  }
+}
+
+// ---------- Pages ----------
+// Home
+write('index.html', layout({
+  title: site.name, description: site.description, body: `
+<div class="wrap">
+<div class="hero">
+<div>
+<h1>${esc(site.tagline)}</h1>
+<p class="lede">${esc(site.description)}</p>
+${searchForm()}
+<p class="muted">${projects.length ? `${projects.length.toLocaleString()} projects across ${domains.length} domains.` : `${domains.length} domains, ${topicIndex.size} topics. First projects arrive soon.`}</p>
+</div>
+${globeSvg}
+</div>
+<section aria-labelledby="explore-h">
+<div class="section-head"><h2 id="explore-h">Explore by domain</h2><a href="${url('domains/')}">All domains</a></div>
+<ul class="grid">${domains.map(d => `<li class="card card--domain"><a class="cover" href="${url(`domains/${d.slug}/`)}"><h3>${esc(d.title)}</h3></a><p class="blurb">${esc(d.blurb)}</p><div class="count">${d.topics.length} topics · ${byDomain.get(d.slug).length.toLocaleString()} projects</div></li>`).join('')}</ul>
+</section>
+<section aria-labelledby="how-h">
+<h2 id="how-h">How Earth works</h2>
+<ul class="principles">${site.principles.map(p => `<li><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></li>`).join('')}</ul>
+</section>
+</div>` }));
+
+// Domains index
+write('domains/index.html', layout({ title: 'Domains', path: 'domains/', current: 'domains/', body: `<div class="wrap"><p class="breadcrumb"><a href="${url('')}">Home</a> › Domains</p><h1>Domains</h1>
+<ul class="grid">${domains.map(d => `<li class="card card--domain"><a class="cover" href="${url(`domains/${d.slug}/`)}"><h3>${esc(d.title)}</h3></a><p class="blurb">${esc(d.blurb)}</p><div class="count">${d.topics.length} topics · ${byDomain.get(d.slug).length.toLocaleString()} projects</div></li>`).join('')}</ul></div>` }));
+
+// Domain pages (topics + paginated projects)
+for (const d of domains) {
+  const items = byDomain.get(d.slug);
+  paginate(items, `domains/${d.slug}/`, (slice, pager, page, pages) => layout({
+    title: d.title + (page > 1 ? ` (page ${page})` : ''), description: d.blurb, path: `domains/${d.slug}/`, current: 'domains/', body: `<div class="wrap">
+<p class="breadcrumb"><a href="${url('')}">Home</a> › <a href="${url('domains/')}">Domains</a> › ${esc(d.title)}</p>
+<h1>${esc(d.title)}</h1><p class="lede muted">${esc(d.blurb)}</p>
+<section aria-labelledby="topics-h"><h2 id="topics-h">Topics</h2>
+<ul class="grid">${d.topics.map(t => `<li class="card"><a class="cover" href="${url(`topics/${t.slug}/`)}"><h3>${esc(t.title)}</h3></a><p class="blurb">${esc(t.blurb)}</p><div class="count">${byTopic.get(t.slug).length.toLocaleString()} projects</div></li>`).join('')}</ul></section>
+<section aria-labelledby="projects-h"><h2 id="projects-h">Projects${pages > 1 ? ` <span class="muted">(${items.length.toLocaleString()})</span>` : ''}</h2>
+${slice.length ? `<ul class="list">${slice.map(projectLi).join('')}</ul>${pager}` : `<div class="empty">No projects published in ${esc(d.title)} yet. They will appear here as they are released.</div>`}
+</section></div>` }));
+}
+
+// Topic pages
+for (const [slug, { topic, domain }] of topicIndex) {
+  const items = byTopic.get(slug);
+  paginate(items, `topics/${slug}/`, (slice, pager, page) => layout({
+    title: topic.title + (page > 1 ? ` (page ${page})` : ''), description: topic.blurb, path: `topics/${slug}/`, current: 'domains/', body: `<div class="wrap">
+<p class="breadcrumb"><a href="${url('')}">Home</a> › <a href="${url('domains/')}">Domains</a> › <a href="${url(`domains/${domain.slug}/`)}">${esc(domain.title)}</a> › ${esc(topic.title)}</p>
+<h1>${esc(topic.title)}</h1><p class="lede muted">${esc(topic.blurb)}</p>
+${slice.length ? `<ul class="list">${slice.map(projectLi).join('')}</ul>${pager}` : `<div class="empty">No projects published for ${esc(topic.title)} yet.</div>`}
+</div>` }));
+}
+
+// Project pages
+for (const p of projects) {
+  const d = domains.find(x => x.slug === p.domain);
+  const stores = p.stores || {};
+  write(`projects/${p.id}/index.html`, layout({ title: p.title, description: p.blurb, path: `projects/${p.id}/`, body: `<div class="wrap wrap--narrow">
+<p class="breadcrumb"><a href="${url('')}">Home</a> › ${d ? `<a href="${url(`domains/${d.slug}/`)}">${esc(d.title)}</a>` : ''}${(p.topics || []).map(t => topicIndex.has(t) ? ` › <a href="${url(`topics/${t}/`)}">${esc(topicIndex.get(t).topic.title)}</a>` : '').join('')}</p>
+<h1>${esc(p.title)}</h1><p class="lede">${esc(p.blurb)}</p>
+<p><span class="badge${p.status === 'live' ? '' : ' badge--coming'}">${esc(p.status || 'coming')}</span>${p.app ? ` <span class="muted">in ${esc(p.app.name)}</span>` : ''}</p>
+${(p.images || []).length ? `<div class="project-media">${p.images.map(im => `<figure><img src="${esc(im.src.startsWith('http') ? im.src : url(im.src))}" alt="${esc(im.alt || '')}" loading="lazy">${im.credit ? `<figcaption>${esc(im.credit)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}
+<div class="actions">${p.play ? `<a class="btn" href="${esc(p.play)}">Play in the browser</a>` : ''}${stores.appStore ? `<a class="btn btn--ghost" href="${esc(stores.appStore)}">App Store</a>` : ''}${stores.googlePlay ? `<a class="btn btn--ghost" href="${esc(stores.googlePlay)}">Google Play</a>` : ''}</div>
+${p.body ? `<div>${p.body}</div>` : ''}
+<p class="muted">Updated ${esc(p.updated || now)}</p>
+<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: p.title, description: p.blurb, applicationCategory: 'GameApplication', operatingSystem: 'iOS, Android, Web', url: site.url.replace(/\/$/, '') + '/' + `projects/${p.id}/` })}</script>
+</div>` }));
+}
+
+// Search page
+write('search/index.html', layout({ title: 'Search', path: 'search/', current: 'search/', body: `<div class="wrap wrap--narrow"><h1>Search</h1><p class="muted">Projects, topics and domains. Results load as you type.</p>${searchForm(true)}</div>` }));
+
+// About
+write('about/index.html', layout({ title: 'About', path: 'about/', current: 'about/', body: `<div class="wrap wrap--narrow">
+<h1>About ${esc(site.name)}</h1>
+<p>${esc(site.name)} is a growing family of games and apps about our planet: its land, water, sky, life, people and history, and how to fly over it.</p>
+<p>Every project is built to work offline after you install it, to use very little data, and to be gentle on the eyes with warm colours, large type, a dark mode and adjustable text size. Facts are sourced and every image is credited.</p>
+<p>This site lists every project. Each page links to the app that carries it and, where available, lets you play in the browser.</p>
+</div>` }));
+
+// 404
+write('404.html', layout({ title: 'Not found', path: '404.html', body: `<div class="wrap wrap--narrow"><h1>Page not found</h1><p>Try a search instead.</p>${searchForm()}</div>` }));
+
+// ---------- Search index ----------
+const docs = [];
+const addDoc = (t, b, u, k, s, extra = '') => docs.push({ id: docs.length, t, b, u, k, s, text: [t, b, k, extra].join(' ') });
+for (const d of domains) addDoc(d.title, d.blurb, `domains/${d.slug}/`, 'Domain', '');
+for (const [slug, { topic, domain }] of topicIndex) addDoc(topic.title, topic.blurb, `topics/${slug}/`, `Topic · ${domain.title}`, '');
+for (const p of projects) addDoc(p.title, p.blurb, `projects/${p.id}/`, `Project · ${(domains.find(x => x.slug === p.domain) || {}).title || ''}`, p.status || 'coming', [...(p.tags || []), ...(p.regions || []), ...(p.topics || [])].join(' '));
+const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s-]/g, ' ');
+const shards = new Map();
+for (const d of docs) {
+  const toks = new Set(norm(d.text).split(/[\s-]+/).filter(t => t.length >= 2));
+  for (const t of toks) { const s = t.slice(0, 2); if (!shards.has(s)) shards.set(s, new Map()); const m = shards.get(s); if (!m.has(t)) m.set(t, []); m.get(t).push(d.id); }
+}
+for (const [s, m] of shards) write(`search/t/${s}.json`, JSON.stringify(Object.fromEntries(m)));
+for (let i = 0; i * DOCS_PER_CHUNK < docs.length; i++) write(`search/d/${i}.json`, JSON.stringify(docs.slice(i * DOCS_PER_CHUNK, (i + 1) * DOCS_PER_CHUNK).map(({ text, ...d }) => d)));
+write('search/manifest.json', JSON.stringify({ docsPerChunk: DOCS_PER_CHUNK, chunks: Math.ceil(docs.length / DOCS_PER_CHUNK), docs: docs.length, shards: [...shards.keys()].sort(), built: now }));
+
+// ---------- Sitemaps, robots, assets ----------
+const urls = ['', 'domains/', 'search/', 'about/', ...domains.map(d => `domains/${d.slug}/`), ...[...topicIndex.keys()].map(s => `topics/${s}/`), ...projects.map(p => `projects/${p.id}/`)];
+const SM = 45000; const smFiles = [];
+for (let i = 0; i * SM < urls.length; i++) {
+  const name = urls.length > SM ? `sitemap-${i + 1}.xml` : 'sitemap.xml'; smFiles.push(name);
+  write(name, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.slice(i * SM, (i + 1) * SM).map(u => `<url><loc>${esc(site.url.replace(/\/$/, '') + '/' + u)}</loc><lastmod>${now}</lastmod></url>`).join('\n')}\n</urlset>\n`);
+}
+if (urls.length > SM) write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${smFiles.map(f => `<sitemap><loc>${site.url.replace(/\/$/, '')}/${f}</loc></sitemap>`).join('\n')}\n</sitemapindex>\n`);
+write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${site.url.replace(/\/$/, '')}/sitemap.xml\n`);
+write('.nojekyll', '');
+mkdirSync(join(OUT, 'assets'), { recursive: true });
+cpSync(join(ROOT, 'src/site.css'), join(OUT, 'assets/site.css'));
+cpSync(join(ROOT, 'src/site.js'), join(OUT, 'assets/site.js'));
+writeFileSync(join(OUT, 'assets/icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8c77"/><path d="M1 12h22M12 1a16 16 0 010 22M12 1a16 16 0 000 22" stroke="rgba(255,255,255,.65)" stroke-width="1.2" fill="none"/></svg>`);
+if (existsSync(join(ROOT, 'data/images'))) cpSync(join(ROOT, 'data/images'), join(OUT, 'images'), { recursive: true });
+
+console.log(`Built ${urls.length} pages, ${docs.length} search docs in ${shards.size} shards -> _site/`);
