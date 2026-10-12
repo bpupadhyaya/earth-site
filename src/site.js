@@ -73,7 +73,14 @@
     var img = document.querySelector('.brand img.mark');
     if (!img || !window.fetch || !document.createElement('canvas').getContext) return;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var rings = null, lon0 = (-new Date().getTimezoneOffset() / 60) * 15, TILT = 18 * Math.PI / 180, lastLon = null, lastTilt = null, canvas, ctx, S, D, lastT = 0, started = false;
+    var rings = null, lon0 = (-new Date().getTimezoneOffset() / 60) * 15, TILT = 18 * Math.PI / 180, lastLon = null, lastTilt = null, col = { hi: '#34a4c4', lo: '#0a4a63', land: '#7bd896' }, canvas, ctx, S, D, lastT = 0, started = false;
+    function readCols() { // same theme tokens the main globe uses, so the two always match
+      var cs = getComputedStyle(root), g = function (n, d) { return (cs.getPropertyValue(n) || '').trim() || d; };
+      col = { hi: g('--g-ocean-hi', col.hi), lo: g('--g-ocean-lo', col.lo), land: g('--g-land', col.land) };
+      lastLon = null; // force a redraw
+    }
+    new MutationObserver(function () { setTimeout(readCols, 0); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    if (window.matchMedia) { var mq = matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', function () { setTimeout(readCols, 0); }); }
     function frame(t) {
       var dt = lastT ? Math.min(100, t - lastT) : 0; lastT = t;
       var g = window.earthGlobe; // main globe on this page: mirror its longitude and tilt exactly
@@ -86,7 +93,7 @@
       var R = S / 2 - 1, c = S / 2, lam0 = lon0 * Math.PI / 180, sT = Math.sin(TILT), cT = Math.cos(TILT);
       ctx.setTransform(D, 0, 0, D, 0, 0); ctx.clearRect(0, 0, S, S);
       var g = ctx.createRadialGradient(c - R * .35, c - R * .4, R * .1, c, c, R);
-      g.addColorStop(0, '#4aa9cc'); g.addColorStop(1, '#0b4560');
+      g.addColorStop(0, col.hi); g.addColorStop(1, col.lo);
       ctx.beginPath(); ctx.arc(c, c, R, 0, 6.2832); ctx.fillStyle = g; ctx.fill();
       ctx.save(); ctx.beginPath(); ctx.arc(c, c, R, 0, 6.2832); ctx.clip();
       ctx.beginPath();
@@ -100,7 +107,7 @@
         }
         ctx.closePath();
       }
-      ctx.fillStyle = '#7bd896'; ctx.fill();
+      ctx.fillStyle = col.land; ctx.fill();
       var sh = ctx.createRadialGradient(c - R * .25, c - R * .3, R * .3, c, c, R * 1.02);
       sh.addColorStop(0, 'rgba(0,0,0,0)'); sh.addColorStop(.75, 'rgba(0,10,20,.12)'); sh.addColorStop(1, 'rgba(0,10,20,.5)');
       ctx.fillStyle = sh; ctx.fillRect(0, 0, S, S);
@@ -112,7 +119,7 @@
     }
     function loop(t) { if (!document.hidden && (!lastT || t - lastT > 30)) frame(t); requestAnimationFrame(loop); }
     fetch(BASE + 'assets/mark-land.json').then(function (r) { return r.json(); }).then(function (j) {
-      rings = j.rings; S = Math.round(img.getBoundingClientRect().width) || 32; D = Math.min(window.devicePixelRatio || 1, 2);
+      readCols(); rings = j.rings; S = Math.round(img.getBoundingClientRect().width) || 32; D = Math.min(window.devicePixelRatio || 1, 2);
       canvas = document.createElement('canvas'); canvas.className = img.className; canvas.setAttribute('aria-hidden', 'true');
       canvas.width = S * D; canvas.height = S * D; canvas.style.width = S + 'px'; canvas.style.height = S + 'px';
       ctx = canvas.getContext('2d'); draw(); img.parentNode.replaceChild(canvas, img);
