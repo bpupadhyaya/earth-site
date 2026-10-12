@@ -1,3 +1,5 @@
+/* Inter (OFL), self-hosted; only downloaded when a theme that uses it is active. */
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap; src: url(fonts/inter-latin-var.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 /* Earth site: warm, low-glare palette; generous legible type; dark mode; adjustable size. */
 :root {
   --bg: #f6f2ea;          /* warm paper, not white */
@@ -38,7 +40,7 @@
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {
     --bg: #171b1e; --surface: #1f2529; --surface-2: #262d32; --text: #e4ded3; --muted: #a4acb2;
     --accent: #78c7b2; --accent-ink: #10201b; --accent-soft: #223730; --earth: #d49154;
     --border: #2f373d; --focus: #8fd8c4;
@@ -46,6 +48,43 @@
     color-scheme: dark;
   }
 }
+
+/* ---- Extra themes: chosen from the theme menu; each only redefines tokens. ---- */
+/* "Clinical": mirrors the Nutrisize Health look (Inter, 16px base, white + mint tint,
+   translucent white header, dark-green centred footer). Content stays independent. */
+:root[data-theme="clinical"] {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f4faf7;
+  --text: #12211b; --muted: #40544a;
+  --accent: #1268b3; --accent-ink: #ffffff; --accent-soft: #e5f0fa;
+  --earth: #178a5e; --border: #dcebe3; --focus: #1268b3;
+  --shadow: 0 4px 24px rgba(11, 61, 46, .08);
+  --radius: 14px; --measure: 66ch;
+  --brand-ink: #0b3d2e; --btn: #14684c; --btn-hover: #0b3d2e;
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 100%; color-scheme: light;
+}
+:root[data-theme="sepia"] {
+  --bg: #f4ecd8; --surface: #fbf5e6; --surface-2: #eadfc4; --text: #3b2f20; --muted: #6a5a43;
+  --accent: #8a4b12; --accent-ink: #fffaf0; --accent-soft: #ecd9b4; --earth: #a35a1c;
+  --border: #d9c9a5; --focus: #8a4b12; color-scheme: light;
+}
+:root[data-theme="ocean"] {
+  --bg: #0f1f2e; --surface: #162b3f; --surface-2: #1d3750; --text: #e3edf5; --muted: #a6bccd;
+  --accent: #6cc4ee; --accent-ink: #08202f; --accent-soft: #1d3d57; --earth: #f0b36a;
+  --border: #284862; --focus: #8fd6f5; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
+}
+:root[data-theme="forest"] {
+  --bg: #14201a; --surface: #1b2b23; --surface-2: #233829; --text: #e6eddf; --muted: #a9bcab;
+  --accent: #8fd49a; --accent-ink: #0d1f13; --accent-soft: #274232; --earth: #e0b070;
+  --border: #2f4a39; --focus: #a6e3ae; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
+}
+:root[data-theme="contrast"] {
+  --bg: #fffdf5; --surface: #ffffff; --surface-2: #f0ede0; --text: #111111; --muted: #2b2b2b;
+  --accent: #0b3fa8; --accent-ink: #ffffff; --accent-soft: #dfe8fb; --earth: #7a3d00;
+  --border: #555555; --focus: #0b3fa8; --shadow: none; color-scheme: light;
+}
+:root[data-theme="contrast"] .card, :root[data-theme="contrast"] .results li, :root[data-theme="contrast"] .list li { border-width: 2px; }
+
 :root[data-size="large"] { font-size: 112.5%; }
 :root[data-size="xlarge"] { font-size: 125%; }
 
@@ -142,3 +181,32 @@ section { padding-block: clamp(1.5rem, 4vw, 3rem); }
 .site-footer { border-top: 1px solid var(--border); margin-top: 3rem; padding-block: 2rem; color: var(--muted); font-size: var(--step--1); }
 .site-footer .wrap { display: flex; gap: 1rem 2rem; flex-wrap: wrap; justify-content: space-between; }
 .site-footer a { color: var(--muted); }
+
+/* Clinical chrome (Nutrisize-style header, hero tint, cards, footer) */
+[data-theme="clinical"] body { font-family: var(--font); line-height: 1.65; letter-spacing: 0; }
+[data-theme="clinical"] a { text-decoration: none; }
+[data-theme="clinical"] a:hover { text-decoration: underline; }
+[data-theme="clinical"] h1, [data-theme="clinical"] h2, [data-theme="clinical"] h3 { color: var(--brand-ink); letter-spacing: -.02em; font-weight: 800; }
+[data-theme="clinical"] h1 { font-weight: 900; letter-spacing: -.03em; line-height: 1.12; }
+[data-theme="clinical"] .site-header { background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+[data-theme="clinical"] .site-header .wrap { width: min(100% - 3rem, 1080px); gap: 28px; min-height: 58px; padding-block: 12px; }
+[data-theme="clinical"] .brand { color: var(--brand-ink); font-weight: 800; font-size: 17px; letter-spacing: -.02em; text-decoration: none; }
+[data-theme="clinical"] .nav { gap: 22px; }
+[data-theme="clinical"] .nav a { padding: 0; border-radius: 0; color: var(--muted); font-size: 15px; font-weight: 500; background: none; }
+[data-theme="clinical"] .nav a:hover, [data-theme="clinical"] .nav a[aria-current="page"] { color: #14684c; background: none; text-decoration: none; }
+[data-theme="clinical"] .ctl { background: #fff; border-color: var(--border); }
+[data-theme="clinical"] .wrap { width: min(100% - 3rem, 1080px); }
+[data-theme="clinical"] .hero { position: relative; background: radial-gradient(1000px 500px at 85% -10%, #e5f0fa 0%, transparent 60%), radial-gradient(900px 500px at 10% 110%, #e3f5ec 0%, transparent 60%), #f4faf7; box-shadow: 0 0 0 100vmax #f4faf7; clip-path: inset(0 -100vmax); }
+[data-theme="clinical"] .hero .lede { color: var(--muted); }
+[data-theme="clinical"] .card, [data-theme="clinical"] .results li { border-color: var(--border); box-shadow: var(--shadow); }
+[data-theme="clinical"] .card { padding: 26px; }
+[data-theme="clinical"] .card--domain { border-top-color: #178a5e; }
+[data-theme="clinical"] .btn { background: var(--btn); border-radius: 999px; font-weight: 600; }
+[data-theme="clinical"] .btn:hover { background: var(--btn-hover); filter: none; text-decoration: none; }
+[data-theme="clinical"] .btn--ghost { background: transparent; color: var(--btn); border-color: var(--btn); }
+[data-theme="clinical"] .btn--ghost:hover { background: var(--accent-soft); }
+[data-theme="clinical"] .badge { background: #e3f5ec; color: #14684c; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700; padding: 4px 14px; }
+[data-theme="clinical"] .pager span[aria-current] { background: var(--btn); }
+[data-theme="clinical"] .site-footer { background: #0b3d2e; color: #cfe6db; border-top: 0; margin-top: 3rem; padding: 44px 0 36px; font-size: 14px; text-align: center; }
+[data-theme="clinical"] .site-footer .wrap { flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+[data-theme="clinical"] .site-footer a { color: #eaf7f0; font-weight: 500; }

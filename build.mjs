@@ -72,7 +72,7 @@ function layout({ title, description, body, path = '', current = '' }) {
 <header class="site-header"><div class="wrap">
 <a class="brand" href="${url('')}">${markSvg}<span>${esc(site.name)}</span></a>
 <nav class="nav" aria-label="Main">${site.nav.map(n => `<a href="${url(n.href)}"${current === n.href ? ' aria-current="page"' : ''}>${esc(n.label)}</a>`).join('')}</nav>
-<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button><button class="ctl" id="theme-ctl" type="button" aria-label="Change colour theme" title="Theme">Auto</button></div>
+<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button><select class="ctl" id="theme-ctl" aria-label="Colour theme" title="Theme"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option><option value="clinical">Clinical</option><option value="sepia">Sepia</option><option value="ocean">Ocean</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></div>
 </div></header>
 <main id="main">${body}</main>
 <footer class="site-footer"><div class="wrap">
@@ -213,6 +213,7 @@ write('.nojekyll', '');
 mkdirSync(join(OUT, 'assets'), { recursive: true });
 cpSync(join(ROOT, 'src/site.css'), join(OUT, 'assets/site.css'));
 cpSync(join(ROOT, 'src/site.js'), join(OUT, 'assets/site.js'));
+cpSync(join(ROOT, 'src/fonts'), join(OUT, 'assets/fonts'), { recursive: true });
 writeFileSync(join(OUT, 'assets/icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8c77"/><path d="M1 12h22M12 1a16 16 0 010 22M12 1a16 16 0 000 22" stroke="rgba(255,255,255,.65)" stroke-width="1.2" fill="none"/></svg>`);
 if (existsSync(join(ROOT, 'data/images'))) cpSync(join(ROOT, 'data/images'), join(OUT, 'images'), { recursive: true });
 

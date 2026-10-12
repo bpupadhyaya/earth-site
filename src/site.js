@@ -5,12 +5,12 @@
   function store(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
-  // Theme: auto -> light -> dark
-  var themes = ['auto', 'light', 'dark'];
-  function applyTheme(t) { if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t); var b = document.getElementById('theme-ctl'); if (b) b.textContent = t === 'auto' ? 'Auto' : t === 'light' ? 'Light' : 'Dark'; }
-  var theme = load('earth.theme') || 'auto'; applyTheme(theme);
+  // Theme: auto + named themes, chosen from a menu (the stored value is the data-theme attribute).
+  var themes = ['auto', 'light', 'dark', 'clinical', 'sepia', 'ocean', 'forest', 'contrast'];
+  function applyTheme(t) { if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t); }
+  var theme = load('earth.theme'); if (themes.indexOf(theme) < 0) theme = 'auto'; applyTheme(theme);
   var tb = document.getElementById('theme-ctl');
-  if (tb) tb.addEventListener('click', function () { theme = themes[(themes.indexOf(theme) + 1) % themes.length]; applyTheme(theme); store('earth.theme', theme === 'auto' ? null : theme); });
+  if (tb) { tb.value = theme; tb.addEventListener('change', function () { theme = tb.value; applyTheme(theme); store('earth.theme', theme === 'auto' ? null : theme); }); }
 
   // Text size: normal -> large -> xlarge
   var sizes = ['normal', 'large', 'xlarge'];
