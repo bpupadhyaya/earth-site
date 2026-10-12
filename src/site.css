@@ -311,3 +311,10 @@ section { padding-block: clamp(1.5rem, 4vw, 3rem); }
 .globe-list a { display: flex; gap: .45rem; align-items: baseline; text-decoration: none; padding: .25rem 0; }
 .globe-list a:hover { text-decoration: underline; }
 @media (max-width: 40rem) { .globe-panel { position: static; margin-top: .6rem; } .globe-canvas { aspect-ratio: auto; flex-direction: column; align-items: center; } }
+
+/* Phone fixes: let hero columns shrink (search form no longer overflows) and lay globe controls in a row below the map */
+.hero > * { min-width: 0; }
+.search input[type="search"] { width: 100%; }
+@media (max-width: 40rem) {
+  .globe-tools { position: static; flex-direction: row; justify-content: center; flex-wrap: wrap; margin-top: .6rem; }
+}
