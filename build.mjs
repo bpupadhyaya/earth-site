@@ -46,7 +46,24 @@ const globeSvg = `<svg viewBox="0 0 200 200" role="img" aria-label="A stylised g
 <ellipse cx="100" cy="100" rx="34" ry="92"/><ellipse cx="100" cy="100" rx="68" ry="92"/><line x1="100" y1="8" x2="100" y2="192"/></g>
 <g fill="rgba(214,176,112,.85)"><path d="M62 58c10-8 24-6 30 2 4 6-2 12-8 16-8 5-16 4-22-2-5-5-6-11 0-16z"/><path d="M118 72c8-4 18 0 20 8 2 9-4 16-12 18-9 2-16-3-17-11-1-7 3-12 9-15z"/><path d="M80 118c12-4 24 2 26 12 1 9-7 14-16 15-11 1-19-4-20-12-1-7 3-12 10-15z"/></g>
 </svg>`;
-const markSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#2f8c77"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" stroke="rgba(255,255,255,.6)" stroke-width="1.2" fill="none"/></svg>`;
+// Brand mark: a small orthographic globe (Natural Earth land, generated once by tools/gen-mark.mjs into content/mark-paths.json).
+const markPaths = JSON.parse(readFileSync(join(ROOT, 'content/mark-paths.json'), 'utf8'));
+const markFile = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="64" height="64">
+<defs>
+<radialGradient id="o" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#7fd0e8"/><stop offset=".5" stop-color="#1f86a8"/><stop offset="1" stop-color="#0a3d5c"/></radialGradient>
+<linearGradient id="l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9be3a4"/><stop offset="1" stop-color="#2f9a5a"/></linearGradient>
+<radialGradient id="s" cx="50%" cy="50%" r="50%"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#021626" stop-opacity=".5"/></radialGradient>
+<radialGradient id="h" cx="30%" cy="24%" r="46%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<clipPath id="c"><circle cx="100" cy="100" r="92"/></clipPath>
+</defs>
+<circle cx="100" cy="100" r="97" fill="none" stroke="#6fd3a8" stroke-opacity=".35" stroke-width="5"/>
+<circle cx="100" cy="100" r="92" fill="url(#o)"/>
+<g clip-path="url(#c)"><path d="${markPaths.grat}" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>
+<path d="${markPaths.land}" fill="url(#l)" stroke="#0e5a35" stroke-opacity=".55" stroke-width="1.1" stroke-linejoin="round"/>
+<circle cx="100" cy="100" r="92" fill="url(#s)"/><circle cx="100" cy="100" r="92" fill="url(#h)"/></g>
+<circle cx="100" cy="100" r="92" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+</svg>`;
+const markSvg = `<img class="mark" src="${url('assets/mark.svg')}" width="32" height="32" alt="" decoding="async">`;
 
 // Theme menu: [value, name, description, swatch colour A, swatch colour B]. Swatches are half/half discs.
 const THEMES = [
@@ -126,7 +143,7 @@ const globeStage = `<div class="globe-stage" id="globe-stage" aria-labelledby="g
 <h2 class="skip" id="globe-h">Interactive globe of places to explore</h2>
 <div class="globe-chips" role="group" aria-label="Show on the globe"><button type="button" class="chip" data-kind="all" aria-pressed="true">All <span>${placesDoc.places.length}</span></button>${placesDoc.kinds.map(k => `<button type="button" class="chip chip--${k.id}" data-kind="${k.id}" aria-pressed="false" title="${esc(k.blurb)}"><i class="dot dot--${k.id}" aria-hidden="true"></i>${esc(k.label)} <span>${kindCounts[k.id] || 0}</span></button>`).join('')}</div>
 <div class="globe-canvas" id="globe" data-places="${url('assets/places.json')}" data-world="${url('assets/data/countries-110m.json')}" data-world-hi="${url('assets/data/countries-50m.json')}">${globeSvg}</div>
-<p class="globe-hint muted">Drag to spin. Ctrl or ⌘ + scroll, or pinch, to zoom. Tap a marker or any country.</p>
+<p class="globe-hint muted">Switch between Globe and Flat map. Drag to move. Ctrl or ⌘ + scroll, or pinch, to zoom. Tap a marker or any country.</p>
 <details class="globe-list"><summary>All ${placesDoc.places.length} places on the globe</summary><ul>${placesDoc.places.map(p => `<li><a href="${url('search/')}?q=${encodeURIComponent(p.name)}" data-place="${esc(p.id)}"><i class="dot dot--${p.kind}" aria-hidden="true"></i>${esc(p.name)} <span class="muted">${esc(p.where)}</span></a></li>`).join('')}</ul></details>
 </div>
 <script src="${url('assets/vendor/d3-array.min.js')}" defer></script><script src="${url('assets/vendor/d3-geo.min.js')}" defer></script><script src="${url('assets/vendor/topojson-client.min.js')}" defer></script><script src="${url('assets/globe.js')}" defer></script>`;
@@ -249,7 +266,8 @@ mkdirSync(join(OUT, 'assets/vendor'), { recursive: true }); mkdirSync(join(OUT, 
 for (const f of ['d3-array.min.js', 'd3-geo.min.js', 'topojson-client.min.js', 'LICENSE']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/vendor', f));
 for (const f of ['countries-110m.json', 'countries-50m.json']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/data', f));
 writeFileSync(join(OUT, 'assets/places.json'), JSON.stringify(placesOut));
-writeFileSync(join(OUT, 'assets/icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8c77"/><path d="M1 12h22M12 1a16 16 0 010 22M12 1a16 16 0 000 22" stroke="rgba(255,255,255,.65)" stroke-width="1.2" fill="none"/></svg>`);
+writeFileSync(join(OUT, 'assets/icon.svg'), markFile);
+writeFileSync(join(OUT, 'assets/mark.svg'), markFile);
 if (existsSync(join(ROOT, 'data/images'))) cpSync(join(ROOT, 'data/images'), join(OUT, 'images'), { recursive: true });
 
 console.log(`Built ${urls.length} pages, ${docs.length} search docs in ${shards.size} shards -> _site/`);
