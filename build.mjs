@@ -51,13 +51,13 @@ const markSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy=
 // Theme menu: [value, name, description, swatch colour A, swatch colour B]. Swatches are half/half discs.
 const THEMES = [
   ['nutrisize', 'Nutrisize', 'Fresh green, the default', '#ffffff', '#2f9e68'],
+  ['arcforge', 'Arcforge', 'Violet and teal on ink', '#0d0b1f', '#7c5cff'],
   ['auto', 'Auto', 'Follows your device, light or dark', '#f6f2ea', '#171b1e'],
   ['light', 'Light', 'Warm paper, easy on the eyes', '#f6f2ea', '#1f6f5f'],
   ['dark', 'Dark', 'Warm dark, low glare', '#171b1e', '#78c7b2'],
   ['sepia', 'Sepia', 'Book-paper warmth', '#f4ecd8', '#8a4b12'],
   ['ocean', 'Ocean', 'Deep blue with sky accents', '#0f1f2e', '#6cc4ee'],
   ['forest', 'Forest', 'Soft green on dark', '#14201a', '#8fd49a'],
-  ['arcforge', 'Arcforge', 'Violet and teal on ink', '#0d0b1f', '#7c5cff'],
   ['contrast', 'High contrast', 'Maximum legibility', '#fffdf5', '#0b3fa8'],
 ];
 const swatch = (a, b) => `<span class="sw" style="background:linear-gradient(135deg,${a} 50%,${b} 50%)" aria-hidden="true"></span>`;
@@ -81,14 +81,14 @@ function layout({ title, description, body, path = '', current = '' }) {
 <meta property="og:title" content="${esc(fullTitle)}"><meta property="og:description" content="${esc(description || site.description)}"><meta property="og:type" content="website"><meta property="og:url" content="${esc(canonical)}">
 <link rel="icon" href="${url('assets/icon.svg')}" type="image/svg+xml">
 <link rel="stylesheet" href="${url('assets/site.css')}">
-<script>(function(){try{var t=localStorage.getItem('earth.theme')||'nutrisize';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('earth.size');if(s)document.documentElement.setAttribute('data-size',s);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('earth.theme')||'nutrisize';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);var z=parseInt(localStorage.getItem('earth.zoom'),10);if(z>=50&&z<=300)document.documentElement.style.setProperty('--zoom',z/100);}catch(e){}})();</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="${url('')}">${markSvg}<span>${esc(site.name)}</span></a>
 <nav class="nav" aria-label="Main">${site.nav.map(n => `<a href="${url(n.href)}"${current === n.href ? ' aria-current="page"' : ''}>${esc(n.label)}</a>`).join('')}</nav>
-<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button>${themeMenu}</div>
+<div class="controls"><div class="zoom" role="group" aria-label="Text size"><button class="ctl ctl--zoom" id="zoom-out" type="button" aria-label="Make text smaller" title="Smaller text"><span class="z-a z-a--sm">A</span><span class="z-sign">&minus;</span></button><button class="ctl ctl--zoomval" id="zoom-val" type="button" aria-label="Text size 100%. Press to reset to 100%" title="Reset text size to 100%">100%</button><button class="ctl ctl--zoom" id="zoom-in" type="button" aria-label="Make text larger" title="Larger text"><span class="z-a z-a--lg">A</span><span class="z-sign">+</span></button></div>${themeMenu}</div>
 </div></header>
 <main id="main">${body}</main>
 <footer class="site-footer"><div class="wrap">
@@ -117,6 +117,20 @@ function paginate(items, basePath, renderPage) {
   }
 }
 
+// Interactive globe: places are curated in content/places.json (sources listed there); the canvas globe is built client-side by src/globe.js.
+const placesDoc = JSON.parse(readFileSync(join(ROOT, 'content/places.json'), 'utf8'));
+const topicTitles = new Map(domains.flatMap(d => d.topics.map(t => [t.slug, t.title])));
+const placesOut = { ...placesDoc, places: placesDoc.places.map(p => ({ ...p, topicTitle: topicTitles.get(p.topic) || p.topic })) };
+const kindCounts = placesDoc.places.reduce((m, p) => (m[p.kind] = (m[p.kind] || 0) + 1, m), {});
+const globeStage = `<div class="globe-stage" id="globe-stage" aria-labelledby="globe-h">
+<h2 class="skip" id="globe-h">Interactive globe of places to explore</h2>
+<div class="globe-chips" role="group" aria-label="Show on the globe"><button type="button" class="chip" data-kind="all" aria-pressed="true">All <span>${placesDoc.places.length}</span></button>${placesDoc.kinds.map(k => `<button type="button" class="chip chip--${k.id}" data-kind="${k.id}" aria-pressed="false" title="${esc(k.blurb)}"><i class="dot dot--${k.id}" aria-hidden="true"></i>${esc(k.label)} <span>${kindCounts[k.id] || 0}</span></button>`).join('')}</div>
+<div class="globe-canvas" id="globe" data-places="${url('assets/places.json')}" data-world="${url('assets/data/countries-110m.json')}" data-world-hi="${url('assets/data/countries-50m.json')}">${globeSvg}</div>
+<p class="globe-hint muted">Drag to spin. Ctrl or ⌘ + scroll, or pinch, to zoom. Tap a marker or any country.</p>
+<details class="globe-list"><summary>All ${placesDoc.places.length} places on the globe</summary><ul>${placesDoc.places.map(p => `<li><a href="${url('search/')}?q=${encodeURIComponent(p.name)}" data-place="${esc(p.id)}"><i class="dot dot--${p.kind}" aria-hidden="true"></i>${esc(p.name)} <span class="muted">${esc(p.where)}</span></a></li>`).join('')}</ul></details>
+</div>
+<script src="${url('assets/vendor/d3-array.min.js')}" defer></script><script src="${url('assets/vendor/d3-geo.min.js')}" defer></script><script src="${url('assets/vendor/topojson-client.min.js')}" defer></script><script src="${url('assets/globe.js')}" defer></script>`;
+
 // ---------- Pages ----------
 // Home
 write('index.html', layout({
@@ -129,7 +143,7 @@ write('index.html', layout({
 ${searchForm()}
 <p class="muted">${projects.length ? `${projects.length.toLocaleString()} projects across ${domains.length} domains.` : `${domains.length} domains, ${topicIndex.size} topics. First projects arrive soon.`}</p>
 </div>
-${globeSvg}
+${globeStage}
 </div>
 <section aria-labelledby="explore-h">
 <div class="section-head"><h2 id="explore-h">Explore by domain</h2><a href="${url('domains/')}">All domains</a></div>
@@ -230,6 +244,11 @@ mkdirSync(join(OUT, 'assets'), { recursive: true });
 cpSync(join(ROOT, 'src/site.css'), join(OUT, 'assets/site.css'));
 cpSync(join(ROOT, 'src/site.js'), join(OUT, 'assets/site.js'));
 cpSync(join(ROOT, 'src/fonts'), join(OUT, 'assets/fonts'), { recursive: true });
+cpSync(join(ROOT, 'src/globe.js'), join(OUT, 'assets/globe.js'));
+mkdirSync(join(OUT, 'assets/vendor'), { recursive: true }); mkdirSync(join(OUT, 'assets/data'), { recursive: true });
+for (const f of ['d3-array.min.js', 'd3-geo.min.js', 'topojson-client.min.js', 'LICENSE']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/vendor', f));
+for (const f of ['countries-110m.json', 'countries-50m.json']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/data', f));
+writeFileSync(join(OUT, 'assets/places.json'), JSON.stringify(placesOut));
 writeFileSync(join(OUT, 'assets/icon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2f8c77"/><path d="M1 12h22M12 1a16 16 0 010 22M12 1a16 16 0 000 22" stroke="rgba(255,255,255,.65)" stroke-width="1.2" fill="none"/></svg>`);
 if (existsSync(join(ROOT, 'data/images'))) cpSync(join(ROOT, 'data/images'), join(OUT, 'images'), { recursive: true });
 

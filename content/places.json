@@ -1,0 +1,657 @@
+{
+ "sources": [
+  "UNESCO World Heritage List (whc.unesco.org)",
+  "Natural Earth via world-atlas (naturalearthdata.com), public domain"
+ ],
+ "kinds": [
+  {
+   "id": "heritage",
+   "label": "Heritage",
+   "blurb": "Places people built and revered"
+  },
+  {
+   "id": "nature",
+   "label": "Nature",
+   "blurb": "Mountains, waters and wild landscapes"
+  },
+  {
+   "id": "wildlife",
+   "label": "Wildlife",
+   "blurb": "Where animals gather and thrive"
+  },
+  {
+   "id": "extremes",
+   "label": "Extremes",
+   "blurb": "Oceans and world records"
+  }
+ ],
+ "places": [
+  {
+   "id": "machu-picchu",
+   "name": "Machu Picchu",
+   "where": "Peru",
+   "lat": -13.163,
+   "lon": -72.545,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A 15th-century Inca citadel high in the Andes, above the Urubamba river."
+  },
+  {
+   "id": "great-wall",
+   "name": "Great Wall of China",
+   "where": "China",
+   "lat": 40.432,
+   "lon": 116.57,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A chain of walls and fortifications built across northern China over many centuries."
+  },
+  {
+   "id": "taj-mahal",
+   "name": "Taj Mahal",
+   "where": "India",
+   "lat": 27.175,
+   "lon": 78.042,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A white marble mausoleum in Agra, completed in the 17th century."
+  },
+  {
+   "id": "petra",
+   "name": "Petra",
+   "where": "Jordan",
+   "lat": 30.329,
+   "lon": 35.444,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A city carved into rose-coloured rock by the Nabataeans."
+  },
+  {
+   "id": "angkor",
+   "name": "Angkor Wat",
+   "where": "Cambodia",
+   "lat": 13.4125,
+   "lon": 103.867,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "The largest temple of the Khmer Empire's capital region, built in the 12th century."
+  },
+  {
+   "id": "giza",
+   "name": "Pyramids of Giza",
+   "where": "Egypt",
+   "lat": 29.9792,
+   "lon": 31.1342,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Royal tombs of the Old Kingdom, built more than 4,000 years ago."
+  },
+  {
+   "id": "stonehenge",
+   "name": "Stonehenge",
+   "where": "United Kingdom",
+   "lat": 51.1789,
+   "lon": -1.8262,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A prehistoric ring of standing stones on Salisbury Plain."
+  },
+  {
+   "id": "rome",
+   "name": "Historic Centre of Rome",
+   "where": "Italy",
+   "lat": 41.8902,
+   "lon": 12.4922,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Home of the Colosseum and the Forum, heart of the ancient Roman world."
+  },
+  {
+   "id": "acropolis",
+   "name": "Acropolis of Athens",
+   "where": "Greece",
+   "lat": 37.9715,
+   "lon": 23.7257,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A hilltop citadel crowned by the Parthenon, built in the 5th century BCE."
+  },
+  {
+   "id": "rapa-nui",
+   "name": "Rapa Nui (Easter Island)",
+   "where": "Chile",
+   "lat": -27.1127,
+   "lon": -109.3497,
+   "kind": "heritage",
+   "topic": "islands",
+   "unesco": true,
+   "blurb": "Remote Pacific island known for its hundreds of carved stone moai figures."
+  },
+  {
+   "id": "lumbini",
+   "name": "Lumbini",
+   "where": "Nepal",
+   "lat": 27.4833,
+   "lon": 83.2833,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Traditionally the birthplace of the Buddha, a pilgrimage site in the Terai plains."
+  },
+  {
+   "id": "kathmandu-valley",
+   "name": "Kathmandu Valley",
+   "where": "Nepal",
+   "lat": 27.7049,
+   "lon": 85.3077,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Seven monument zones of palaces, temples and stupas in a Himalayan valley."
+  },
+  {
+   "id": "bagan",
+   "name": "Bagan",
+   "where": "Myanmar",
+   "lat": 21.1717,
+   "lon": 94.8585,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A plain scattered with thousands of temples and pagodas from the 11th to 13th centuries."
+  },
+  {
+   "id": "kyoto",
+   "name": "Ancient Kyoto",
+   "where": "Japan",
+   "lat": 35.0116,
+   "lon": 135.7681,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Temples, shrines and gardens from over a thousand years as Japan's imperial capital."
+  },
+  {
+   "id": "chichen-itza",
+   "name": "Chichén Itzá",
+   "where": "Mexico",
+   "lat": 20.6843,
+   "lon": -88.5678,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A Maya city whose stepped pyramid El Castillo aligns with the equinox sun."
+  },
+  {
+   "id": "istanbul",
+   "name": "Historic Areas of Istanbul",
+   "where": "Türkiye",
+   "lat": 41.0086,
+   "lon": 28.9802,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A city on two continents, shaped by Roman, Byzantine and Ottoman rule."
+  },
+  {
+   "id": "timbuktu",
+   "name": "Timbuktu",
+   "where": "Mali",
+   "lat": 16.7735,
+   "lon": -3.0074,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A Saharan trading town long famous as a centre of Islamic learning."
+  },
+  {
+   "id": "great-zimbabwe",
+   "name": "Great Zimbabwe",
+   "where": "Zimbabwe",
+   "lat": -20.2674,
+   "lon": 30.9337,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Stone ruins of a medieval city that gave the country its name."
+  },
+  {
+   "id": "lalibela",
+   "name": "Lalibela",
+   "where": "Ethiopia",
+   "lat": 12.0317,
+   "lon": 39.0417,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "Eleven medieval churches carved down into solid rock."
+  },
+  {
+   "id": "borobudur",
+   "name": "Borobudur",
+   "where": "Indonesia",
+   "lat": -7.6079,
+   "lon": 110.2038,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "The world's largest Buddhist temple, built in the 9th century on Java."
+  },
+  {
+   "id": "mont-saint-michel",
+   "name": "Mont-Saint-Michel",
+   "where": "France",
+   "lat": 48.636,
+   "lon": -1.5115,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A fortified abbey on a tidal island, ringed by some of Europe's strongest tides."
+  },
+  {
+   "id": "sydney-opera",
+   "name": "Sydney Opera House",
+   "where": "Australia",
+   "lat": -33.8568,
+   "lon": 151.2153,
+   "kind": "heritage",
+   "topic": "landmarks",
+   "unesco": true,
+   "blurb": "A 20th-century landmark with sail-like shells on Sydney Harbour."
+  },
+  {
+   "id": "everest",
+   "name": "Mount Everest",
+   "where": "Nepal / China",
+   "lat": 27.9881,
+   "lon": 86.925,
+   "kind": "nature",
+   "topic": "mountains",
+   "unesco": true,
+   "blurb": "Earth's highest mountain above sea level, in the Himalaya."
+  },
+  {
+   "id": "grand-canyon",
+   "name": "Grand Canyon",
+   "where": "United States",
+   "lat": 36.1069,
+   "lon": -112.1129,
+   "kind": "nature",
+   "topic": "mountains",
+   "unesco": true,
+   "blurb": "A canyon carved by the Colorado River, exposing about two billion years of rock."
+  },
+  {
+   "id": "great-barrier-reef",
+   "name": "Great Barrier Reef",
+   "where": "Australia",
+   "lat": -18.2871,
+   "lon": 147.6992,
+   "kind": "nature",
+   "topic": "coral-reefs",
+   "unesco": true,
+   "blurb": "The largest coral reef system on Earth, visible from space."
+  },
+  {
+   "id": "amazon",
+   "name": "Amazon Rainforest",
+   "where": "Brazil and neighbours",
+   "lat": -3.4653,
+   "lon": -62.2159,
+   "kind": "nature",
+   "topic": "forests",
+   "unesco": false,
+   "blurb": "The largest tropical rainforest, home to a vast share of the world's species."
+  },
+  {
+   "id": "victoria-falls",
+   "name": "Victoria Falls",
+   "where": "Zambia / Zimbabwe",
+   "lat": -17.9243,
+   "lon": 25.8572,
+   "kind": "nature",
+   "topic": "waterfalls",
+   "unesco": true,
+   "blurb": "A curtain of water over a kilometre wide, known locally as Mosi-oa-Tunya, 'the smoke that thunders'."
+  },
+  {
+   "id": "iguazu",
+   "name": "Iguazú Falls",
+   "where": "Argentina / Brazil",
+   "lat": -25.6953,
+   "lon": -54.4367,
+   "kind": "nature",
+   "topic": "waterfalls",
+   "unesco": true,
+   "blurb": "A wide arc of waterfalls in subtropical rainforest."
+  },
+  {
+   "id": "angel-falls",
+   "name": "Angel Falls",
+   "where": "Venezuela",
+   "lat": 5.9701,
+   "lon": -62.5362,
+   "kind": "nature",
+   "topic": "waterfalls",
+   "unesco": true,
+   "blurb": "The world's tallest uninterrupted waterfall, dropping from a tabletop mountain."
+  },
+  {
+   "id": "niagara",
+   "name": "Niagara Falls",
+   "where": "Canada / United States",
+   "lat": 43.0962,
+   "lon": -79.0377,
+   "kind": "nature",
+   "topic": "waterfalls",
+   "unesco": false,
+   "blurb": "Three waterfalls on the river linking Lake Erie and Lake Ontario."
+  },
+  {
+   "id": "kilimanjaro",
+   "name": "Mount Kilimanjaro",
+   "where": "Tanzania",
+   "lat": -3.0674,
+   "lon": 37.3556,
+   "kind": "nature",
+   "topic": "volcanoes",
+   "unesco": true,
+   "blurb": "Africa's highest peak, a freestanding volcanic mountain near the equator."
+  },
+  {
+   "id": "fuji",
+   "name": "Mount Fuji",
+   "where": "Japan",
+   "lat": 35.3606,
+   "lon": 138.7274,
+   "kind": "nature",
+   "topic": "volcanoes",
+   "unesco": true,
+   "blurb": "An almost symmetrical volcano and a sacred symbol of Japan."
+  },
+  {
+   "id": "sahara",
+   "name": "Sahara Desert",
+   "where": "North Africa",
+   "lat": 23.4162,
+   "lon": 25.6628,
+   "kind": "nature",
+   "topic": "deserts",
+   "unesco": false,
+   "blurb": "The largest hot desert in the world, spanning much of North Africa."
+  },
+  {
+   "id": "atacama",
+   "name": "Atacama Desert",
+   "where": "Chile",
+   "lat": -24.5,
+   "lon": -69.25,
+   "kind": "nature",
+   "topic": "deserts",
+   "unesco": false,
+   "blurb": "One of the driest places on Earth, with some weather stations never recording rain."
+  },
+  {
+   "id": "uyuni",
+   "name": "Salar de Uyuni",
+   "where": "Bolivia",
+   "lat": -20.1338,
+   "lon": -67.4891,
+   "kind": "nature",
+   "topic": "deserts",
+   "unesco": false,
+   "blurb": "The world's largest salt flat, which mirrors the sky after rain."
+  },
+  {
+   "id": "baikal",
+   "name": "Lake Baikal",
+   "where": "Russia",
+   "lat": 53.5,
+   "lon": 108.0,
+   "kind": "nature",
+   "topic": "lakes",
+   "unesco": true,
+   "blurb": "The deepest and oldest lake on Earth, holding a fifth of the world's unfrozen fresh water."
+  },
+  {
+   "id": "titicaca",
+   "name": "Lake Titicaca",
+   "where": "Peru / Bolivia",
+   "lat": -15.9254,
+   "lon": -69.3354,
+   "kind": "nature",
+   "topic": "lakes",
+   "unesco": false,
+   "blurb": "A high Andean lake, among the highest large lakes you can navigate by boat."
+  },
+  {
+   "id": "dead-sea",
+   "name": "Dead Sea",
+   "where": "Jordan / Israel",
+   "lat": 31.5,
+   "lon": 35.5,
+   "kind": "nature",
+   "topic": "lakes",
+   "unesco": false,
+   "blurb": "A salt lake whose shore is the lowest dry land on Earth."
+  },
+  {
+   "id": "halong",
+   "name": "Hạ Long Bay",
+   "where": "Vietnam",
+   "lat": 20.9101,
+   "lon": 107.1839,
+   "kind": "nature",
+   "topic": "islands",
+   "unesco": true,
+   "blurb": "Thousands of limestone islands and pillars rising from emerald water."
+  },
+  {
+   "id": "uluru",
+   "name": "Uluru",
+   "where": "Australia",
+   "lat": -25.3444,
+   "lon": 131.0369,
+   "kind": "nature",
+   "topic": "mountains",
+   "unesco": true,
+   "blurb": "A vast sandstone monolith sacred to the Anangu people."
+  },
+  {
+   "id": "yellowstone",
+   "name": "Yellowstone",
+   "where": "United States",
+   "lat": 44.428,
+   "lon": -110.5885,
+   "kind": "nature",
+   "topic": "volcanoes",
+   "unesco": true,
+   "blurb": "A supervolcano caldera with geysers, hot springs and bison herds."
+  },
+  {
+   "id": "tromso",
+   "name": "Tromsø",
+   "where": "Norway",
+   "lat": 69.6492,
+   "lon": 18.9553,
+   "kind": "nature",
+   "topic": "auroras",
+   "unesco": false,
+   "blurb": "A city inside the auroral zone, a classic place to watch the northern lights."
+  },
+  {
+   "id": "blue-hole",
+   "name": "Great Blue Hole",
+   "where": "Belize",
+   "lat": 17.3158,
+   "lon": -87.5347,
+   "kind": "nature",
+   "topic": "oceans",
+   "unesco": true,
+   "blurb": "A giant marine sinkhole, almost perfectly circular, off the Belize coast."
+  },
+  {
+   "id": "serengeti",
+   "name": "Serengeti",
+   "where": "Tanzania",
+   "lat": -2.3333,
+   "lon": 34.8333,
+   "kind": "wildlife",
+   "topic": "migrations",
+   "unesco": true,
+   "blurb": "Grasslands crossed each year by one of the largest land animal migrations."
+  },
+  {
+   "id": "galapagos",
+   "name": "Galápagos Islands",
+   "where": "Ecuador",
+   "lat": -0.9538,
+   "lon": -90.9656,
+   "kind": "wildlife",
+   "topic": "islands",
+   "unesco": true,
+   "blurb": "Isolated volcanic islands whose wildlife helped inspire the theory of evolution."
+  },
+  {
+   "id": "madagascar",
+   "name": "Madagascar",
+   "where": "Madagascar",
+   "lat": -18.7669,
+   "lon": 46.8691,
+   "kind": "wildlife",
+   "topic": "biodiversity",
+   "unesco": false,
+   "blurb": "An island home to lemurs and many other animals found nowhere else."
+  },
+  {
+   "id": "borneo",
+   "name": "Borneo rainforest",
+   "where": "Indonesia / Malaysia / Brunei",
+   "lat": 0.9619,
+   "lon": 114.5548,
+   "kind": "wildlife",
+   "topic": "forests",
+   "unesco": false,
+   "blurb": "Ancient rainforest where orangutans, clouded leopards and pygmy elephants live."
+  },
+  {
+   "id": "okavango",
+   "name": "Okavango Delta",
+   "where": "Botswana",
+   "lat": -19.2833,
+   "lon": 22.9,
+   "kind": "wildlife",
+   "topic": "lakes",
+   "unesco": true,
+   "blurb": "An inland delta that floods each year and draws elephants and other wildlife."
+  },
+  {
+   "id": "monarch",
+   "name": "Monarch Butterfly Reserve",
+   "where": "Mexico",
+   "lat": 19.6,
+   "lon": -100.3,
+   "kind": "wildlife",
+   "topic": "insects",
+   "unesco": true,
+   "blurb": "Mountain forests where millions of monarch butterflies spend the winter."
+  },
+  {
+   "id": "komodo",
+   "name": "Komodo",
+   "where": "Indonesia",
+   "lat": -8.55,
+   "lon": 119.45,
+   "kind": "wildlife",
+   "topic": "islands",
+   "unesco": true,
+   "blurb": "The home of the Komodo dragon, the largest living lizard."
+  },
+  {
+   "id": "svalbard",
+   "name": "Svalbard",
+   "where": "Norway",
+   "lat": 78.2232,
+   "lon": 15.6267,
+   "kind": "wildlife",
+   "topic": "glaciers",
+   "unesco": false,
+   "blurb": "An Arctic archipelago where polar bears hunt on the sea ice."
+  },
+  {
+   "id": "antarctica",
+   "name": "Antarctica",
+   "where": "Antarctica",
+   "lat": -82.8628,
+   "lon": 135.0,
+   "kind": "wildlife",
+   "topic": "glaciers",
+   "unesco": false,
+   "blurb": "A continent of ice that hosts penguins, seals and seabirds along its coast."
+  },
+  {
+   "id": "mariana",
+   "name": "Mariana Trench",
+   "where": "Pacific Ocean",
+   "lat": 11.3733,
+   "lon": 142.5917,
+   "kind": "extremes",
+   "topic": "oceans",
+   "unesco": false,
+   "blurb": "The deepest known place in the ocean, at Challenger Deep."
+  },
+  {
+   "id": "point-nemo",
+   "name": "Point Nemo",
+   "where": "South Pacific",
+   "lat": -48.8767,
+   "lon": -123.3933,
+   "kind": "extremes",
+   "topic": "oceans",
+   "unesco": false,
+   "blurb": "The spot in the ocean farthest from any land."
+  },
+  {
+   "id": "mauna-kea",
+   "name": "Mauna Kea",
+   "where": "Hawaiʻi",
+   "lat": 19.8206,
+   "lon": -155.4681,
+   "kind": "extremes",
+   "topic": "volcanoes",
+   "unesco": false,
+   "blurb": "Measured from its base on the sea floor, the tallest mountain on Earth."
+  },
+  {
+   "id": "vostok",
+   "name": "Vostok Station",
+   "where": "Antarctica",
+   "lat": -78.4644,
+   "lon": 106.8372,
+   "kind": "extremes",
+   "topic": "records",
+   "unesco": false,
+   "blurb": "Where the lowest natural air temperature on Earth was recorded, in 1983."
+  },
+  {
+   "id": "death-valley",
+   "name": "Death Valley",
+   "where": "United States",
+   "lat": 36.5323,
+   "lon": -116.9325,
+   "kind": "extremes",
+   "topic": "records",
+   "unesco": false,
+   "blurb": "One of the hottest places on Earth, a desert basin below sea level."
+  }
+ ]
+}
