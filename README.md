@@ -1,6 +1,6 @@
 # Earth site
 
-Public catalog and marketing site for Earth: games and apps about our planet. Live at https://bpupadhyaya.github.io/earth-site/
+Public catalog and marketing site for Earth: games and apps about our planet. Live at https://equalinformation.com/earth-site/
 
 - `content/` — site text, domains and topics (edited by the publisher job).
 - `data/catalog/` — project catalog exported by the Earth factory; never hand-edited.
