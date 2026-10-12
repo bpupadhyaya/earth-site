@@ -36,6 +36,8 @@
   var anim = null, vel = [0, 0], last = 0, raf = 0;
   var isFlat = function () { return st.view === 'flat'; };
   var curProj = function () { return isFlat() ? flat : projection; };
+  // The small header globe (site.js) follows this view so the two always turn together.
+  window.earthGlobe = { get lon() { return -st.rot[0]; }, get lat() { return isFlat() ? 18 : -st.rot[1]; } };
 
   // ---------- Load ----------
   function getJSON(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u); return r.json(); }); }

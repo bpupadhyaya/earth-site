@@ -73,11 +73,14 @@
     var img = document.querySelector('.brand img.mark');
     if (!img || !window.fetch || !document.createElement('canvas').getContext) return;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var rings = null, lon0 = (-new Date().getTimezoneOffset() / 60) * 15, TILT = 18 * Math.PI / 180, canvas, ctx, S, D, lastT = 0, started = false;
+    var rings = null, lon0 = (-new Date().getTimezoneOffset() / 60) * 15, TILT = 18 * Math.PI / 180, lastLon = null, lastTilt = null, canvas, ctx, S, D, lastT = 0, started = false;
     function frame(t) {
       var dt = lastT ? Math.min(100, t - lastT) : 0; lastT = t;
-      if (!reduce) lon0 -= dt * 0.0055; // surface moves eastward, like the main globe
-      draw();
+      var g = window.earthGlobe; // main globe on this page: mirror its longitude and tilt exactly
+      if (g) { lon0 = g.lon; TILT = Math.max(-60, Math.min(60, g.lat)) * Math.PI / 180; }
+      else if (!reduce) lon0 -= dt * 0.0055; // otherwise spin on our own, eastward like the main globe
+      if (lon0 === lastLon && TILT === lastTilt) return;
+      lastLon = lon0; lastTilt = TILT; draw();
     }
     function draw() {
       var R = S / 2 - 1, c = S / 2, lam0 = lon0 * Math.PI / 180, sT = Math.sin(TILT), cT = Math.cos(TILT);
@@ -113,7 +116,7 @@
       canvas = document.createElement('canvas'); canvas.className = img.className; canvas.setAttribute('aria-hidden', 'true');
       canvas.width = S * D; canvas.height = S * D; canvas.style.width = S + 'px'; canvas.style.height = S + 'px';
       ctx = canvas.getContext('2d'); draw(); img.parentNode.replaceChild(canvas, img);
-      if (!reduce) requestAnimationFrame(loop);
+      requestAnimationFrame(loop);
     }).catch(function () {});
   })();
 
