@@ -67,6 +67,56 @@
   if (zv) zv.addEventListener('click', function () { zoom = 100; applyZoom(); store('earth.zoom', null); });
   applyZoom();
 
+  // Header mark: a small canvas globe that really rotates (same direction and speed as the main globe).
+  // The static <img class="mark"> stays as the fallback if scripts, fetch or canvas are unavailable.
+  (function () {
+    var img = document.querySelector('.brand img.mark');
+    if (!img || !window.fetch || !document.createElement('canvas').getContext) return;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var rings = null, lon0 = (-new Date().getTimezoneOffset() / 60) * 15, TILT = 18 * Math.PI / 180, canvas, ctx, S, D, lastT = 0, started = false;
+    function frame(t) {
+      var dt = lastT ? Math.min(100, t - lastT) : 0; lastT = t;
+      if (!reduce) lon0 -= dt * 0.0055; // surface moves eastward, like the main globe
+      draw();
+    }
+    function draw() {
+      var R = S / 2 - 1, c = S / 2, lam0 = lon0 * Math.PI / 180, sT = Math.sin(TILT), cT = Math.cos(TILT);
+      ctx.setTransform(D, 0, 0, D, 0, 0); ctx.clearRect(0, 0, S, S);
+      var g = ctx.createRadialGradient(c - R * .35, c - R * .4, R * .1, c, c, R);
+      g.addColorStop(0, '#4aa9cc'); g.addColorStop(1, '#0b4560');
+      ctx.beginPath(); ctx.arc(c, c, R, 0, 6.2832); ctx.fillStyle = g; ctx.fill();
+      ctx.save(); ctx.beginPath(); ctx.arc(c, c, R, 0, 6.2832); ctx.clip();
+      ctx.beginPath();
+      for (var i = 0; i < rings.length; i++) {
+        var r = rings[i], first = true;
+        for (var j = 0; j < r.length; j += 2) {
+          var phi = r[j + 1] * Math.PI / 180, dl = r[j] * Math.PI / 180 - lam0, cp = Math.cos(phi);
+          var x = cp * Math.sin(dl), y = cT * Math.sin(phi) - sT * cp * Math.cos(dl), z = sT * Math.sin(phi) + cT * cp * Math.cos(dl);
+          if (z < 0) { var h = Math.hypot(x, y) || 1; x /= h; y /= h; } // hidden points slide to the limb
+          if (first) { ctx.moveTo(c + R * x, c - R * y); first = false; } else ctx.lineTo(c + R * x, c - R * y);
+        }
+        ctx.closePath();
+      }
+      ctx.fillStyle = '#7bd896'; ctx.fill();
+      var sh = ctx.createRadialGradient(c - R * .25, c - R * .3, R * .3, c, c, R * 1.02);
+      sh.addColorStop(0, 'rgba(0,0,0,0)'); sh.addColorStop(.75, 'rgba(0,10,20,.12)'); sh.addColorStop(1, 'rgba(0,10,20,.5)');
+      ctx.fillStyle = sh; ctx.fillRect(0, 0, S, S);
+      var sp = ctx.createRadialGradient(c - R * .4, c - R * .45, 0, c - R * .4, c - R * .45, R * .65);
+      sp.addColorStop(0, 'rgba(255,255,255,.35)'); sp.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = sp; ctx.fillRect(0, 0, S, S);
+      ctx.restore();
+      ctx.beginPath(); ctx.arc(c, c, R, 0, 6.2832); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1; ctx.stroke();
+    }
+    function loop(t) { if (!document.hidden && (!lastT || t - lastT > 30)) frame(t); requestAnimationFrame(loop); }
+    fetch(BASE + 'assets/mark-land.json').then(function (r) { return r.json(); }).then(function (j) {
+      rings = j.rings; S = Math.round(img.getBoundingClientRect().width) || 32; D = Math.min(window.devicePixelRatio || 1, 2);
+      canvas = document.createElement('canvas'); canvas.className = img.className; canvas.setAttribute('aria-hidden', 'true');
+      canvas.width = S * D; canvas.height = S * D; canvas.style.width = S + 'px'; canvas.style.height = S + 'px';
+      ctx = canvas.getContext('2d'); draw(); img.parentNode.replaceChild(canvas, img);
+      if (!reduce) requestAnimationFrame(loop);
+    }).catch(function () {});
+  })();
+
   // Search. Index layout (built by build.mjs):
   //   search/manifest.json      { docsPerChunk, chunks, shards: ["ab", ...] }
   //   search/t/<ab>.json        { "<token>": [docId, ...] }  tokens starting with "ab"

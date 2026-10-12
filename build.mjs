@@ -262,6 +262,7 @@ cpSync(join(ROOT, 'src/site.css'), join(OUT, 'assets/site.css'));
 cpSync(join(ROOT, 'src/site.js'), join(OUT, 'assets/site.js'));
 cpSync(join(ROOT, 'src/fonts'), join(OUT, 'assets/fonts'), { recursive: true });
 cpSync(join(ROOT, 'src/globe.js'), join(OUT, 'assets/globe.js'));
+cpSync(join(ROOT, 'content/mark-land.json'), join(OUT, 'assets/mark-land.json'));
 mkdirSync(join(OUT, 'assets/vendor'), { recursive: true }); mkdirSync(join(OUT, 'assets/data'), { recursive: true });
 for (const f of ['d3-array.min.js', 'd3-geo.min.js', 'topojson-client.min.js', 'LICENSE']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/vendor', f));
 for (const f of ['countries-110m.json', 'countries-50m.json']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/data', f));
