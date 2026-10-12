@@ -5,12 +5,51 @@
   function store(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
-  // Theme: auto + named themes, chosen from a menu (default Nutrisize; 'auto' follows the system setting).
-  var themes = ['nutrisize', 'auto', 'light', 'dark', 'sepia', 'ocean', 'forest', 'contrast'];
+  // Theme menu: default Nutrisize; 'auto' follows the device. Options are rendered by build.mjs.
+  var tb = document.getElementById('theme-ctl');
+  var tl = document.getElementById('theme-list');
+  var opts = tl ? Array.prototype.slice.call(tl.querySelectorAll('[data-theme-value]')) : [];
+  var themes = opts.map(function (o) { return o.getAttribute('data-theme-value'); });
+  if (!themes.length) themes = ['nutrisize', 'auto'];
   function applyTheme(t) { if (t === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', t); }
   var theme = load('earth.theme'); if (themes.indexOf(theme) < 0) theme = 'nutrisize'; applyTheme(theme);
-  var tb = document.getElementById('theme-ctl');
-  if (tb) { tb.value = theme; tb.addEventListener('change', function () { theme = tb.value; applyTheme(theme); store('earth.theme', theme); }); }
+  function mark() {
+    opts.forEach(function (o) {
+      var on = o.getAttribute('data-theme-value') === theme;
+      o.setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on && tb) {
+        var cur = tb.querySelector('.sw'), src = o.querySelector('.sw');
+        if (cur && src) cur.setAttribute('style', src.getAttribute('style'));
+        tb.setAttribute('aria-label', 'Colour theme: ' + o.querySelector('.t-name').textContent);
+      }
+    });
+  }
+  function closeMenu(refocus) { if (!tl || tl.hidden) return; tl.hidden = true; tb.setAttribute('aria-expanded', 'false'); if (refocus) tb.focus(); }
+  function openMenu() {
+    tl.hidden = false; tb.setAttribute('aria-expanded', 'true');
+    var sel = opts.filter(function (o) { return o.getAttribute('aria-selected') === 'true'; })[0] || opts[0];
+    if (sel) sel.focus();
+  }
+  function choose(o) { theme = o.getAttribute('data-theme-value'); applyTheme(theme); store('earth.theme', theme); mark(); closeMenu(true); }
+  mark();
+  if (tb && tl) {
+    tb.addEventListener('click', function () { if (tl.hidden) openMenu(); else closeMenu(false); });
+    tb.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown' && tl.hidden) { e.preventDefault(); openMenu(); } });
+    opts.forEach(function (o, i) {
+      o.addEventListener('click', function () { choose(o); });
+      o.addEventListener('keydown', function (e) {
+        var k = e.key;
+        if (k === 'ArrowDown') { e.preventDefault(); opts[(i + 1) % opts.length].focus(); }
+        else if (k === 'ArrowUp') { e.preventDefault(); opts[(i - 1 + opts.length) % opts.length].focus(); }
+        else if (k === 'Home') { e.preventDefault(); opts[0].focus(); }
+        else if (k === 'End') { e.preventDefault(); opts[opts.length - 1].focus(); }
+        else if (k === 'Enter' || k === ' ') { e.preventDefault(); choose(o); }
+        else if (k === 'Escape') { e.preventDefault(); closeMenu(true); }
+        else if (k === 'Tab') { closeMenu(false); }
+      });
+    });
+    document.addEventListener('click', function (e) { if (!tl.hidden && !tl.contains(e.target) && !tb.contains(e.target)) closeMenu(false); });
+  }
 
   // Text size: normal -> large -> xlarge
   var sizes = ['normal', 'large', 'xlarge'];

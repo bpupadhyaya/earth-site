@@ -48,6 +48,22 @@ const globeSvg = `<svg viewBox="0 0 200 200" role="img" aria-label="A stylised g
 </svg>`;
 const markSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#2f8c77"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" stroke="rgba(255,255,255,.6)" stroke-width="1.2" fill="none"/></svg>`;
 
+// Theme menu: [value, name, description, swatch colour A, swatch colour B]. Swatches are half/half discs.
+const THEMES = [
+  ['nutrisize', 'Nutrisize', 'Fresh green, the default', '#ffffff', '#2f9e68'],
+  ['auto', 'Auto', 'Follows your device, light or dark', '#f6f2ea', '#171b1e'],
+  ['light', 'Light', 'Warm paper, easy on the eyes', '#f6f2ea', '#1f6f5f'],
+  ['dark', 'Dark', 'Warm dark, low glare', '#171b1e', '#78c7b2'],
+  ['sepia', 'Sepia', 'Book-paper warmth', '#f4ecd8', '#8a4b12'],
+  ['ocean', 'Ocean', 'Deep blue with sky accents', '#0f1f2e', '#6cc4ee'],
+  ['forest', 'Forest', 'Soft green on dark', '#14201a', '#8fd49a'],
+  ['arcforge', 'Arcforge', 'Violet and teal on ink', '#0d0b1f', '#7c5cff'],
+  ['contrast', 'High contrast', 'Maximum legibility', '#fffdf5', '#0b3fa8'],
+];
+const swatch = (a, b) => `<span class="sw" style="background:linear-gradient(135deg,${a} 50%,${b} 50%)" aria-hidden="true"></span>`;
+const themeMenu = `<div class="theme-menu"><button class="ctl ctl--theme" id="theme-ctl" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="theme-list" aria-label="Colour theme" title="Theme">${swatch('#ffffff', '#2f9e68')}<svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<ul class="theme-list" id="theme-list" role="listbox" aria-label="Colour theme" hidden>${THEMES.map(([v, n, d, a, b]) => `<li role="option" tabindex="-1" data-theme-value="${v}" aria-selected="false">${swatch(a, b)}<span class="t-text"><span class="t-name">${n}</span><span class="t-desc">${d}</span></span><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></li>`).join('')}</ul></div>`;
+
 function layout({ title, description, body, path = '', current = '' }) {
   const fullTitle = path ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`;
   const canonical = site.url.replace(/\/$/, '') + '/' + path;
@@ -72,7 +88,7 @@ function layout({ title, description, body, path = '', current = '' }) {
 <header class="site-header"><div class="wrap">
 <a class="brand" href="${url('')}">${markSvg}<span>${esc(site.name)}</span></a>
 <nav class="nav" aria-label="Main">${site.nav.map(n => `<a href="${url(n.href)}"${current === n.href ? ' aria-current="page"' : ''}>${esc(n.label)}</a>`).join('')}</nav>
-<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button><select class="ctl" id="theme-ctl" aria-label="Colour theme" title="Theme"><option value="nutrisize" selected>Nutrisize</option><option value="auto">Auto (system)</option><option value="light">Light</option><option value="dark">Dark</option><option value="sepia">Sepia</option><option value="ocean">Ocean</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></div>
+<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button>${themeMenu}</div>
 </div></header>
 <main id="main">${body}</main>
 <footer class="site-footer"><div class="wrap">

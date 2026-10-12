@@ -55,11 +55,11 @@
 :root[data-theme="nutrisize"] {
   --bg: #ffffff; --surface: #ffffff; --surface-2: #f4faf7;
   --text: #12211b; --muted: #40544a;
-  --accent: #1268b3; --accent-ink: #ffffff; --accent-soft: #e5f0fa;
-  --earth: #178a5e; --border: #dcebe3; --focus: #1268b3;
+  --accent: #16794c; --accent-ink: #ffffff; --accent-soft: #e3f5ec;
+  --earth: #2f9e68; --border: #d3e8dc; --focus: #1268b3;
   --shadow: 0 4px 24px rgba(11, 61, 46, .08);
   --radius: 14px; --measure: 66ch;
-  --brand-ink: #0b3d2e; --btn: #14684c; --btn-hover: #0b3d2e;
+  --brand-ink: #0b3d2e; --btn: #16794c; --btn-hover: #0f5c39;
   --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 100%; color-scheme: light;
 }
@@ -77,6 +77,12 @@
   --bg: #14201a; --surface: #1b2b23; --surface-2: #233829; --text: #e6eddf; --muted: #a9bcab;
   --accent: #8fd49a; --accent-ink: #0d1f13; --accent-soft: #274232; --earth: #e0b070;
   --border: #2f4a39; --focus: #a6e3ae; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
+}
+/* Arcforge: violet and teal on ink (matches the games brand). */
+:root[data-theme="arcforge"] {
+  --bg: #0d0b1f; --surface: #17142d; --surface-2: #211d3d; --text: #ece9ff; --muted: #b4aed6;
+  --accent: #4fd1c5; --accent-ink: #0d0b1f; --accent-soft: #1d2f3d; --earth: #9b7bff;
+  --border: #2d2852; --focus: #7ee3d9; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35); color-scheme: dark;
 }
 :root[data-theme="contrast"] {
   --bg: #fffdf5; --surface: #ffffff; --surface-2: #f0ede0; --text: #111111; --muted: #2b2b2b;
@@ -193,20 +199,40 @@ section { padding-block: clamp(1.5rem, 4vw, 3rem); }
 [data-theme="nutrisize"] .brand { color: var(--brand-ink); font-weight: 800; font-size: 17px; letter-spacing: -.02em; text-decoration: none; }
 [data-theme="nutrisize"] .nav { gap: 22px; }
 [data-theme="nutrisize"] .nav a { padding: 0; border-radius: 0; color: var(--muted); font-size: 15px; font-weight: 500; background: none; }
-[data-theme="nutrisize"] .nav a:hover, [data-theme="nutrisize"] .nav a[aria-current="page"] { color: #14684c; background: none; text-decoration: none; }
-[data-theme="nutrisize"] .ctl { background: #fff; border-color: var(--border); }
+[data-theme="nutrisize"] .nav a:hover, [data-theme="nutrisize"] .nav a[aria-current="page"] { color: #16794c; background: none; text-decoration: none; }
+[data-theme="nutrisize"] .ctl, [data-theme="nutrisize"] .theme-list { background: #fff; border-color: var(--border); }
 [data-theme="nutrisize"] .wrap { width: min(100% - 3rem, 1080px); }
-[data-theme="nutrisize"] .hero { position: relative; background: radial-gradient(1000px 500px at 85% -10%, #e5f0fa 0%, transparent 60%), radial-gradient(900px 500px at 10% 110%, #e3f5ec 0%, transparent 60%), #f4faf7; box-shadow: 0 0 0 100vmax #f4faf7; clip-path: inset(0 -100vmax); }
+[data-theme="nutrisize"] body { overflow-x: clip; }
+[data-theme="nutrisize"] .hero { position: relative; isolation: isolate; }
+[data-theme="nutrisize"] .hero::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); background: radial-gradient(1000px 500px at 85% -10%, #d8f3e3 0%, transparent 60%), radial-gradient(900px 500px at 10% 110%, #e3f5ec 0%, transparent 60%), #f4faf7; }
 [data-theme="nutrisize"] .hero .lede { color: var(--muted); }
 [data-theme="nutrisize"] .card, [data-theme="nutrisize"] .results li { border-color: var(--border); box-shadow: var(--shadow); }
 [data-theme="nutrisize"] .card { padding: 26px; }
-[data-theme="nutrisize"] .card--domain { border-top-color: #178a5e; }
+[data-theme="nutrisize"] .card--domain { border-top-color: #2f9e68; }
 [data-theme="nutrisize"] .btn { background: var(--btn); border-radius: 999px; font-weight: 600; }
 [data-theme="nutrisize"] .btn:hover { background: var(--btn-hover); filter: none; text-decoration: none; }
 [data-theme="nutrisize"] .btn--ghost { background: transparent; color: var(--btn); border-color: var(--btn); }
 [data-theme="nutrisize"] .btn--ghost:hover { background: var(--accent-soft); }
-[data-theme="nutrisize"] .badge { background: #e3f5ec; color: #14684c; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700; padding: 4px 14px; }
+[data-theme="nutrisize"] .badge { background: #e3f5ec; color: #16794c; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700; padding: 4px 14px; }
 [data-theme="nutrisize"] .pager span[aria-current] { background: var(--btn); }
 [data-theme="nutrisize"] .site-footer { background: #0b3d2e; color: #cfe6db; border-top: 0; margin-top: 3rem; padding: 44px 0 36px; font-size: 14px; text-align: center; }
 [data-theme="nutrisize"] .site-footer .wrap { flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
 [data-theme="nutrisize"] .site-footer a { color: #eaf7f0; font-weight: 500; }
+
+/* Theme menu: swatch button + listbox with name, description and a tick on the active theme */
+.theme-menu { position: relative; }
+.sw { display: inline-block; width: 1.35rem; height: 1.35rem; flex: none; border-radius: 50%; border: 1.5px solid var(--muted); }
+.ctl--theme { display: inline-flex; align-items: center; gap: .5rem; padding: 0 .75rem; }
+.ctl--theme .chev { width: .8rem; height: .55rem; }
+.theme-list { position: absolute; right: 0; top: calc(100% + .5rem); z-index: 40; width: min(21rem, calc(100vw - 2rem)); max-height: min(70vh, 30rem); overflow: auto; margin: 0; padding: .4rem; list-style: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.theme-list[hidden] { display: none; }
+.theme-list li { display: flex; align-items: center; gap: .85rem; padding: .7rem .8rem; border-radius: 10px; cursor: pointer; }
+.theme-list li:hover { background: var(--surface-2); }
+.theme-list li[aria-selected="true"] { background: var(--surface-2); }
+.theme-list li:focus-visible { outline: 3px solid var(--focus); outline-offset: -2px; }
+.theme-list .t-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.theme-list .t-name { font-weight: 700; line-height: 1.3; }
+.theme-list .t-desc { color: var(--muted); font-size: var(--step--1); line-height: 1.35; }
+.theme-list .tick { width: 1.1rem; height: 1.1rem; color: var(--accent); visibility: hidden; flex: none; }
+.theme-list li[aria-selected="true"] .tick { visibility: visible; }
+@media (max-width: 40rem) { .theme-list { position: fixed; left: 1rem; right: 1rem; top: 4.5rem; width: auto; } }
