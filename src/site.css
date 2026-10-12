@@ -50,9 +50,9 @@
 }
 
 /* ---- Extra themes: chosen from the theme menu; each only redefines tokens. ---- */
-/* "Clinical": mirrors the Nutrisize Health look (Inter, 16px base, white + mint tint,
+/* "Nutrisize": mirrors the Nutrisize Health look (Inter, 16px base, white + mint tint,
    translucent white header, dark-green centred footer). Content stays independent. */
-:root[data-theme="clinical"] {
+:root[data-theme="nutrisize"] {
   --bg: #ffffff; --surface: #ffffff; --surface-2: #f4faf7;
   --text: #12211b; --muted: #40544a;
   --accent: #1268b3; --accent-ink: #ffffff; --accent-soft: #e5f0fa;
@@ -182,31 +182,31 @@ section { padding-block: clamp(1.5rem, 4vw, 3rem); }
 .site-footer .wrap { display: flex; gap: 1rem 2rem; flex-wrap: wrap; justify-content: space-between; }
 .site-footer a { color: var(--muted); }
 
-/* Clinical chrome (Nutrisize-style header, hero tint, cards, footer) */
-[data-theme="clinical"] body { font-family: var(--font); line-height: 1.65; letter-spacing: 0; }
-[data-theme="clinical"] a { text-decoration: none; }
-[data-theme="clinical"] a:hover { text-decoration: underline; }
-[data-theme="clinical"] h1, [data-theme="clinical"] h2, [data-theme="clinical"] h3 { color: var(--brand-ink); letter-spacing: -.02em; font-weight: 800; }
-[data-theme="clinical"] h1 { font-weight: 900; letter-spacing: -.03em; line-height: 1.12; }
-[data-theme="clinical"] .site-header { background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
-[data-theme="clinical"] .site-header .wrap { width: min(100% - 3rem, 1080px); gap: 28px; min-height: 58px; padding-block: 12px; }
-[data-theme="clinical"] .brand { color: var(--brand-ink); font-weight: 800; font-size: 17px; letter-spacing: -.02em; text-decoration: none; }
-[data-theme="clinical"] .nav { gap: 22px; }
-[data-theme="clinical"] .nav a { padding: 0; border-radius: 0; color: var(--muted); font-size: 15px; font-weight: 500; background: none; }
-[data-theme="clinical"] .nav a:hover, [data-theme="clinical"] .nav a[aria-current="page"] { color: #14684c; background: none; text-decoration: none; }
-[data-theme="clinical"] .ctl { background: #fff; border-color: var(--border); }
-[data-theme="clinical"] .wrap { width: min(100% - 3rem, 1080px); }
-[data-theme="clinical"] .hero { position: relative; background: radial-gradient(1000px 500px at 85% -10%, #e5f0fa 0%, transparent 60%), radial-gradient(900px 500px at 10% 110%, #e3f5ec 0%, transparent 60%), #f4faf7; box-shadow: 0 0 0 100vmax #f4faf7; clip-path: inset(0 -100vmax); }
-[data-theme="clinical"] .hero .lede { color: var(--muted); }
-[data-theme="clinical"] .card, [data-theme="clinical"] .results li { border-color: var(--border); box-shadow: var(--shadow); }
-[data-theme="clinical"] .card { padding: 26px; }
-[data-theme="clinical"] .card--domain { border-top-color: #178a5e; }
-[data-theme="clinical"] .btn { background: var(--btn); border-radius: 999px; font-weight: 600; }
-[data-theme="clinical"] .btn:hover { background: var(--btn-hover); filter: none; text-decoration: none; }
-[data-theme="clinical"] .btn--ghost { background: transparent; color: var(--btn); border-color: var(--btn); }
-[data-theme="clinical"] .btn--ghost:hover { background: var(--accent-soft); }
-[data-theme="clinical"] .badge { background: #e3f5ec; color: #14684c; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700; padding: 4px 14px; }
-[data-theme="clinical"] .pager span[aria-current] { background: var(--btn); }
-[data-theme="clinical"] .site-footer { background: #0b3d2e; color: #cfe6db; border-top: 0; margin-top: 3rem; padding: 44px 0 36px; font-size: 14px; text-align: center; }
-[data-theme="clinical"] .site-footer .wrap { flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
-[data-theme="clinical"] .site-footer a { color: #eaf7f0; font-weight: 500; }
+/* Nutrisize chrome (Nutrisize-style header, hero tint, cards, footer) */
+[data-theme="nutrisize"] body { font-family: var(--font); line-height: 1.65; letter-spacing: 0; }
+[data-theme="nutrisize"] a { text-decoration: none; }
+[data-theme="nutrisize"] a:hover { text-decoration: underline; }
+[data-theme="nutrisize"] h1, [data-theme="nutrisize"] h2, [data-theme="nutrisize"] h3 { color: var(--brand-ink); letter-spacing: -.02em; font-weight: 800; }
+[data-theme="nutrisize"] h1 { font-weight: 900; letter-spacing: -.03em; line-height: 1.12; }
+[data-theme="nutrisize"] .site-header { background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+[data-theme="nutrisize"] .site-header .wrap { width: min(100% - 3rem, 1080px); gap: 28px; min-height: 58px; padding-block: 12px; }
+[data-theme="nutrisize"] .brand { color: var(--brand-ink); font-weight: 800; font-size: 17px; letter-spacing: -.02em; text-decoration: none; }
+[data-theme="nutrisize"] .nav { gap: 22px; }
+[data-theme="nutrisize"] .nav a { padding: 0; border-radius: 0; color: var(--muted); font-size: 15px; font-weight: 500; background: none; }
+[data-theme="nutrisize"] .nav a:hover, [data-theme="nutrisize"] .nav a[aria-current="page"] { color: #14684c; background: none; text-decoration: none; }
+[data-theme="nutrisize"] .ctl { background: #fff; border-color: var(--border); }
+[data-theme="nutrisize"] .wrap { width: min(100% - 3rem, 1080px); }
+[data-theme="nutrisize"] .hero { position: relative; background: radial-gradient(1000px 500px at 85% -10%, #e5f0fa 0%, transparent 60%), radial-gradient(900px 500px at 10% 110%, #e3f5ec 0%, transparent 60%), #f4faf7; box-shadow: 0 0 0 100vmax #f4faf7; clip-path: inset(0 -100vmax); }
+[data-theme="nutrisize"] .hero .lede { color: var(--muted); }
+[data-theme="nutrisize"] .card, [data-theme="nutrisize"] .results li { border-color: var(--border); box-shadow: var(--shadow); }
+[data-theme="nutrisize"] .card { padding: 26px; }
+[data-theme="nutrisize"] .card--domain { border-top-color: #178a5e; }
+[data-theme="nutrisize"] .btn { background: var(--btn); border-radius: 999px; font-weight: 600; }
+[data-theme="nutrisize"] .btn:hover { background: var(--btn-hover); filter: none; text-decoration: none; }
+[data-theme="nutrisize"] .btn--ghost { background: transparent; color: var(--btn); border-color: var(--btn); }
+[data-theme="nutrisize"] .btn--ghost:hover { background: var(--accent-soft); }
+[data-theme="nutrisize"] .badge { background: #e3f5ec; color: #14684c; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700; padding: 4px 14px; }
+[data-theme="nutrisize"] .pager span[aria-current] { background: var(--btn); }
+[data-theme="nutrisize"] .site-footer { background: #0b3d2e; color: #cfe6db; border-top: 0; margin-top: 3rem; padding: 44px 0 36px; font-size: 14px; text-align: center; }
+[data-theme="nutrisize"] .site-footer .wrap { flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+[data-theme="nutrisize"] .site-footer a { color: #eaf7f0; font-weight: 500; }

@@ -52,7 +52,7 @@ function layout({ title, description, body, path = '', current = '' }) {
   const fullTitle = path ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`;
   const canonical = site.url.replace(/\/$/, '') + '/' + path;
   return `<!doctype html>
-<html lang="${site.language}" data-base="${BASE}">
+<html lang="${site.language}" data-base="${BASE}" data-theme="nutrisize">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -60,19 +60,19 @@ function layout({ title, description, body, path = '', current = '' }) {
 <meta name="description" content="${esc(description || site.description)}">
 <link rel="canonical" href="${esc(canonical)}">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f6f2ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171b1e" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="${esc(fullTitle)}"><meta property="og:description" content="${esc(description || site.description)}"><meta property="og:type" content="website"><meta property="og:url" content="${esc(canonical)}">
 <link rel="icon" href="${url('assets/icon.svg')}" type="image/svg+xml">
 <link rel="stylesheet" href="${url('assets/site.css')}">
-<script>(function(){try{var t=localStorage.getItem('earth.theme');if(t)document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('earth.size');if(s)document.documentElement.setAttribute('data-size',s);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('earth.theme')||'nutrisize';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('earth.size');if(s)document.documentElement.setAttribute('data-size',s);}catch(e){}})();</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="${url('')}">${markSvg}<span>${esc(site.name)}</span></a>
 <nav class="nav" aria-label="Main">${site.nav.map(n => `<a href="${url(n.href)}"${current === n.href ? ' aria-current="page"' : ''}>${esc(n.label)}</a>`).join('')}</nav>
-<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button><select class="ctl" id="theme-ctl" aria-label="Colour theme" title="Theme"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option><option value="clinical">Clinical</option><option value="sepia">Sepia</option><option value="ocean">Ocean</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></div>
+<div class="controls"><button class="ctl" id="size-ctl" type="button" aria-label="Change text size" title="Text size">A<span style="font-size:1.25em">A</span></button><select class="ctl" id="theme-ctl" aria-label="Colour theme" title="Theme"><option value="nutrisize" selected>Nutrisize</option><option value="auto">Auto (system)</option><option value="light">Light</option><option value="dark">Dark</option><option value="sepia">Sepia</option><option value="ocean">Ocean</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></div>
 </div></header>
 <main id="main">${body}</main>
 <footer class="site-footer"><div class="wrap">
