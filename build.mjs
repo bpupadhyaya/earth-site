@@ -74,6 +74,7 @@ const THEMES = [
   ['light', 'Light', 'Warm paper, easy on the eyes', '#f6f2ea', '#1f6f5f'],
   ['dark', 'Dark', 'Warm dark, low glare', '#171b1e', '#78c7b2'],
   ['sepia', 'Sepia', 'Book-paper warmth', '#f4ecd8', '#8a4b12'],
+  ['teal', 'Deep teal', 'Calm teal-slate, easy on the eyes', '#1b343a', '#394f54'],
   ['ocean', 'Ocean', 'Deep blue with sky accents', '#0f1f2e', '#6cc4ee'],
   ['contrast', 'High contrast', 'Maximum legibility', '#fffdf5', '#0b3fa8'],
 ];
