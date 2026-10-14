@@ -68,13 +68,13 @@ const markSvg = `<img class="mark" src="${url('assets/mark.svg')}" width="32" he
 // Theme menu: [value, name, description, swatch colour A, swatch colour B]. Swatches are half/half discs.
 const THEMES = [
   ['nutrisize', 'Nutrisize', 'Fresh green, the default', '#ffffff', '#2f9e68'],
+  ['teal', 'Deep teal', 'Calm teal-slate, easy on the eyes', '#1b343a', '#394f54'],
   ['arcforge', 'Arcforge', 'Violet and teal on ink', '#0d0b1f', '#7c5cff'],
   ['forest', 'Forest', 'Soft green on dark', '#14201a', '#8fd49a'],
   ['auto', 'Auto', 'Follows your device, light or dark', '#f6f2ea', '#171b1e'],
   ['light', 'Light', 'Warm paper, easy on the eyes', '#f6f2ea', '#1f6f5f'],
   ['dark', 'Dark', 'Warm dark, low glare', '#171b1e', '#78c7b2'],
   ['sepia', 'Sepia', 'Book-paper warmth', '#f4ecd8', '#8a4b12'],
-  ['teal', 'Deep teal', 'Calm teal-slate, easy on the eyes', '#1b343a', '#394f54'],
   ['ocean', 'Ocean', 'Deep blue with sky accents', '#0f1f2e', '#6cc4ee'],
   ['contrast', 'High contrast', 'Maximum legibility', '#fffdf5', '#0b3fa8'],
 ];
