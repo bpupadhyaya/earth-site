@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Earth Atlas: Picture Games (browser demo)</title>
-<link rel="stylesheet" href="./shell.css">
+<style>html, body { margin: 0; height: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: manipulation; }  /* no double-tap zoom: quick repeated taps (Larger text, answers) must never zoom the page */
+body { background: var(--launch, #f7f3ea); overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+#app { min-height: 100%; box-sizing: border-box; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.shell-note { font: 16px system-ui, sans-serif; padding: 1.5rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
 <style>
 :root{--site-nav-h:34px}
 .site-nav{position:sticky;top:0;z-index:50;box-sizing:border-box;height:var(--site-nav-h);display:flex;align-items:center;gap:.9rem;padding:0 max(.75rem,env(safe-area-inset-left));background:#0b1b2b;color:#e8eef5;font:600 13px/1 system-ui,-apple-system,sans-serif;border-bottom:1px solid rgba(255,255,255,.14)}
@@ -15,79 +19,22 @@
 .boot-note{margin:0;padding:3rem 1.25rem;text-align:center;font:600 17px/1.5 system-ui,-apple-system,sans-serif;color:#e8eef5}
 .ea-logo{cursor:pointer}
 </style>
+<style>.sk{min-height:100vh;color:#e8eef5;font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(#1c5b8f,#0d2742 45%,#0a1c30)}
+.sk-h{padding:1.1rem 1.25rem .6rem}.sk-h b{display:block;letter-spacing:.3em;font-size:1.15rem}.sk-h small{display:block;margin-top:.2rem;letter-spacing:.16em;font-size:.72rem;opacity:.8}
+.sk-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8rem;padding:.8rem 1.25rem 2rem}
+.sk-t{display:flex;align-items:center;gap:.7rem;padding:.7rem;border-radius:16px;background:rgba(255,255,255,.1)}.sk-t img{border-radius:14px;flex:none}.sk-t span{font-weight:600;font-size:.95rem}
+.sk-s{margin:0;padding:0 1.25rem;opacity:.7;font-size:.9rem}</style>
 <script>document.addEventListener('click',function(e){var t=e.target;if(t&&t.closest&&t.closest('.ea-brand .ea-logo'))location.href='../../../';});</script>
-<link rel="modulepreload" href="./boot.mjs">
-<link rel="modulepreload" href="./native.mjs">
-<link rel="modulepreload" href="./engine/app/start.mjs">
-<link rel="modulepreload" href="./engine/core/packstore.mjs">
-<link rel="modulepreload" href="./engine/core/kv.mjs">
-<link rel="modulepreload" href="./engine/core/schema.mjs">
-<link rel="modulepreload" href="./engine/core/integrity.mjs">
-<link rel="modulepreload" href="./engine/core/hash.mjs">
-<link rel="modulepreload" href="./engine/core/library.mjs">
-<link rel="modulepreload" href="./engine/core/catalog/catalog.mjs">
-<link rel="modulepreload" href="./engine/core/pack.mjs">
-<link rel="modulepreload" href="./engine/core/template.mjs">
-<link rel="modulepreload" href="./engine/core/screen.mjs">
-<link rel="modulepreload" href="./engine/core/settings.mjs">
-<link rel="modulepreload" href="./engine/core/entitlements.mjs">
-<link rel="modulepreload" href="./engine/core/preview.mjs">
-<link rel="modulepreload" href="./engine/payments/index.mjs">
-<link rel="modulepreload" href="./engine/payments/debug.mjs">
-<link rel="modulepreload" href="./engine/ui/app.mjs">
-<link rel="modulepreload" href="./engine/ui/render-dom.mjs">
-<link rel="modulepreload" href="./engine/ui/themes.mjs">
-<link rel="modulepreload" href="./engine/ui/atlas-draw.mjs">
-<link rel="modulepreload" href="./engine/ui/chrome-css.mjs">
-<link rel="modulepreload" href="./engine/ui/flight-hud.mjs">
-<link rel="modulepreload" href="./engine/ui/dom.mjs">
-<link rel="modulepreload" href="./engine/ui/views.mjs">
-<link rel="modulepreload" href="./engine/ui/growth.mjs">
-<link rel="modulepreload" href="./engine/core/share.mjs">
-<link rel="modulepreload" href="./engine/core/rng.mjs">
-<link rel="modulepreload" href="./engine/ui/icons.mjs">
-<link rel="modulepreload" href="./engine/ui/player.mjs">
-<link rel="modulepreload" href="./engine/core/env.mjs">
-<link rel="modulepreload" href="./engine/ui/flow.mjs">
-<link rel="modulepreload" href="./engine/ui/gallery.mjs">
-<link rel="modulepreload" href="./engine/ui/scene-plate.mjs">
-<link rel="modulepreload" href="./engine/ui/controls.mjs">
-<link rel="modulepreload" href="./engine/ui/game.mjs">
-<link rel="modulepreload" href="./engine/ui/course.mjs">
-<link rel="modulepreload" href="./engine/core/course.mjs">
-<link rel="modulepreload" href="./engine/render/index.mjs">
-<link rel="modulepreload" href="./engine/render/renderer.mjs">
-<link rel="modulepreload" href="./engine/render/handle.mjs">
-<link rel="modulepreload" href="./engine/render/geo.mjs">
-<link rel="modulepreload" href="./engine/render/camera.mjs">
-<link rel="modulepreload" href="./engine/render/light.mjs">
-<link rel="modulepreload" href="./engine/astro/sun.mjs">
-<link rel="modulepreload" href="./engine/astro/moon.mjs">
-<link rel="modulepreload" href="./engine/astro/time.mjs">
-<link rel="modulepreload" href="./engine/render/scene.mjs">
-<link rel="modulepreload" href="./engine/render/terrain.mjs">
-<link rel="modulepreload" href="./engine/render/surface.mjs">
-<link rel="modulepreload" href="./engine/render/shapes.mjs">
-<link rel="modulepreload" href="./engine/render/overlays.mjs">
-<link rel="modulepreload" href="./engine/render/labels.mjs">
-<link rel="modulepreload" href="./engine/render/cockpit-frame.mjs">
-<link rel="modulepreload" href="./engine/render/governor.mjs">
-<link rel="modulepreload" href="./engine/render/webgl.mjs">
-<link rel="modulepreload" href="./engine/render/draw2d.mjs">
-<link rel="modulepreload" href="./engine/render/shaders.mjs">
-<link rel="modulepreload" href="./engine/render/canvas2d.mjs">
-<link rel="modulepreload" href="./engine/world/basemap.mjs">
-<link rel="modulepreload" href="./engine/world/mesh.mjs">
-<link rel="modulepreload" href="./engine/world/addressing.mjs">
-<link rel="modulepreload" href="./engine/net/assetpacks.mjs">
-<link rel="modulepreload" href="./templates/play/atlas/template.mjs">
-<link rel="modulepreload" href="./templates/play/atlas/schema.mjs">
-<link rel="preload" href="./engine/world/data/basemap.ebm" as="fetch" crossorigin>
-
+<link rel="modulepreload" href="./_app/demo-boot-4Z44M25U.js">
+<link rel="preload" href="./app.json" as="fetch" crossorigin>
+<link rel="preload" href="./_chunk/catalog/index.json" as="fetch" crossorigin>
+<link rel="preload" href="./_chunk/catalog/shards/climate/starter.json" as="fetch" crossorigin>
+<link rel="preload" href="./_chunk/catalog/shards/countries/starter.json" as="fetch" crossorigin>
 </head>
 <body>
 <!--site-nav-->
-<div id="app" aria-live="polite"><p class="boot-note">Loading Earth Atlas…</p></div>
-<script type="module" src="./boot.mjs"></script>
+<div id="app" aria-live="polite"><div class="sk" aria-hidden="true"><div class="sk-h"><b>EARTH</b><small>EARTH ATLAS: PICTURE GAMES</small></div><div class="sk-g"><div class="sk-t"><img src="./icons/capitals.webp" width="64" height="64" alt="" decoding="async"><span>Capital Cities</span></div><div class="sk-t"><img src="./icons/map.webp" width="64" height="64" alt="" decoding="async"><span>Find It on the Map</span></div><div class="sk-t"><img src="./icons/sizes.webp" width="64" height="64" alt="" decoding="async"><span>Country Sizes and Populations</span></div><div class="sk-t"><img src="./icons/neighbours.webp" width="64" height="64" alt="" decoding="async"><span>Neighbours and World Regions</span></div><div class="sk-t"><img src="./icons/wild-range.webp" width="64" height="64" alt="" decoding="async"><span>Which Animal Lives Here?</span></div><div class="sk-t"><img src="./icons/waters.webp" width="64" height="64" alt="" decoding="async"><span>Which River or Lake?</span></div><div class="sk-t"><img src="./icons/mountains.webp" width="64" height="64" alt="" decoding="async"><span>Which Mountain Is This?</span></div><div class="sk-t"><img src="./icons/climate.webp" width="64" height="64" alt="" decoding="async"><span>What's the Weather Like?</span></div><div class="sk-t"><img src="./icons/food.webp" width="64" height="64" alt="" decoding="async"><span>Which Food Comes From Here?</span></div><div class="sk-t"><img src="./icons/languages.webp" width="64" height="64" alt="" decoding="async"><span>Which Language Is Spoken Here?</span></div><div class="sk-t"><img src="./icons/events.webp" width="64" height="64" alt="" decoding="async"><span>Where Did It Happen?</span></div></div></div><p class="sk-s" role="status" style="position:absolute;left:-9999px">Loading Earth Atlas…</p></div>
+<script type="module" src="./_app/demo-boot-4Z44M25U.js"></script>
+<script>if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})})</script>
 </body>
 </html>
