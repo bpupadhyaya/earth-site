@@ -1,0 +1,1 @@
+{"id":"countries-area-europe-spread-cd82cd","title":"Sort by area: Europe","subtitle":"3 rounds of 5","template":"play/sort","requires":{"template":"^1.0.0"},"domain":"countries","tags":["countries","geography","sort","area","europe","spread"],"region":["europe"],"difficulty":2,"age":"all","entitlement":"free","languages":["en"],"minutes":6,"created":"2026-10-12"}

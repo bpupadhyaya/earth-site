@@ -1,0 +1,4 @@
+html, body { margin: 0; height: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: manipulation; }  /* no double-tap zoom: quick repeated taps (Larger text, answers) must never zoom the page */
+body { background: var(--launch, #f7f3ea); overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+#app { min-height: 100%; box-sizing: border-box; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.shell-note { font: 16px system-ui, sans-serif; padding: 1.5rem; white-space: pre-wrap; overflow-wrap: anywhere; }

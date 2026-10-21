@@ -1,0 +1,1 @@
+{"id":"countries-area-world-hard-00e8b9","title":"Estimate area: the world (narrow ranges)","subtitle":"6 estimates per play","template":"play/estimate","requires":{"template":"^1.0.0"},"domain":"countries","tags":["countries","geography","estimate","area","world","hard"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":3,"created":"2026-10-12"}

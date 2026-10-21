@@ -1,0 +1,1 @@
+{"id":"climate-annual-rain-world-e63e02","title":"Cities of World: order by rainfall","subtitle":"12 cities, 2 rounds of 5","template":"play/sort","requires":{"template":"^1.0.0"},"domain":"climate","tags":["climate","cities","sorting","rainfall","world"],"difficulty":3,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}

@@ -1,0 +1,1 @@
+{"id":"countries-population-world-close-5d756b","title":"Sort by population: the world (close values)","subtitle":"3 rounds of 5","template":"play/sort","requires":{"template":"^1.0.0"},"domain":"countries","tags":["countries","geography","sort","population","world","close"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":6,"created":"2026-10-12"}

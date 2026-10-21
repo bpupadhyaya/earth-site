@@ -1,0 +1,1 @@
+{"id":"countries-capital-country-world-1b8122","title":"Match countries to capitals: the world","subtitle":"18 pairs in 3 rounds","template":"play/match","requires":{"template":"^1.0.0"},"domain":"countries","tags":["capitals","geography","match","world","capital-country"],"difficulty":3,"age":"all","entitlement":"free","languages":["en"],"minutes":6,"created":"2026-10-12"}

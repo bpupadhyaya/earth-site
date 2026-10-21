@@ -1,0 +1,1 @@
+{"id":"climate-zone-of-city-oceania-dfb127","title":"Climate zones of Oceania","subtitle":"9 questions","template":"play/quiz","requires":{"template":"^1.2.0"},"domain":"climate","tags":["climate","koppen-geiger","cities","oceania"],"region":["oceania"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":3,"created":"2026-10-12"}

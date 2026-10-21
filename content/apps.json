@@ -1,0 +1,37 @@
+{
+  "apps": [
+    {
+      "id": "earth-atlas",
+      "name": "Earth Atlas: Picture Games",
+      "tagline": "Play the planet: country maps, flags, animals, rivers and mountains. Offline.",
+      "platforms": "Android",
+      "status": "review",
+      "stores": { "googlePlay": "" },
+      "icon": "apps/earth-atlas/img/icon-512.png",
+      "feature": "apps/earth-atlas/img/feature.jpg",
+      "featureAlt": "Earth Atlas: Picture Games: a night-blue globe with country shapes, a flag, an animal and a mountain",
+      "demo": "apps/earth-atlas/play/",
+      "privacy": "https://bpupadhyaya.github.io/privacy-earth-atlas.html",
+      "support": "https://bpupadhyaya.github.io/app-support-earth-atlas.html",
+      "about": [
+        "Earth Atlas: Picture Games is a set of geography games on real maps. See a country on its map and flag, a river's path or a mountain's country, then tap the city, animal, river, mountain, climate or neighbour that belongs to it.",
+        "Every play draws fresh countries and animals from the whole world, or you can pick a continent. Wrong cards grey out so you can try again. Text size runs from 100% to 300%, and there are colour themes and a reduce-motion setting.",
+        "It plays fully offline once installed: no account, no sign-in, no ads and no tracking. Every game lists the sources of its facts, such as Natural Earth and United Nations statistics."
+      ],
+      "pricing": "Capital Cities is free to play. Each of the other ten games is a one-time purchase, with no subscription.",
+      "games": [
+        { "id": "capitals", "title": "Capital Cities", "free": true, "blurb": "The country on its map and flag, three city cards with clues." },
+        { "id": "map", "title": "Find It on the Map", "blurb": "Put every country in its place." },
+        { "id": "sizes", "title": "Country Sizes and Populations", "blurb": "Guess how big it is or how many people live there." },
+        { "id": "neighbours", "title": "Neighbours and World Regions", "blurb": "Who borders whom, and where it lies." },
+        { "id": "wild-range", "title": "Which Animal Lives Here?", "blurb": "Read the range map, spot the animal." },
+        { "id": "waters", "title": "Which River or Lake?", "blurb": "Follow the water across the map." },
+        { "id": "mountains", "title": "Which Mountain Is This?", "blurb": "Spot the peak or volcano by its country." },
+        { "id": "climate", "title": "What's the Weather Like?", "blurb": "Pin a city, pick its climate." },
+        { "id": "food", "title": "Which Food Comes From Here?", "blurb": "From dumplings to cheeses, find the home country." },
+        { "id": "languages", "title": "Which Language Is Spoken Here?", "blurb": "Match countries and their languages." },
+        { "id": "events", "title": "Where Did It Happen?", "blurb": "Launches, flights, expeditions and quakes by country." }
+      ]
+    }
+  ]
+}

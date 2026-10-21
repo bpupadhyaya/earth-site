@@ -1,0 +1,1 @@
+{"id":"countries-area-europe-easy-420b4b","title":"Estimate area: Europe","subtitle":"6 estimates per play","template":"play/estimate","requires":{"template":"^1.0.0"},"domain":"countries","tags":["countries","geography","estimate","area","europe","easy"],"region":["europe"],"difficulty":2,"age":"all","entitlement":"free","languages":["en"],"minutes":3,"created":"2026-10-12"}

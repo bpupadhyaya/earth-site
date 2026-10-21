@@ -1,0 +1,1 @@
+{"id":"countries-countries-world-timed-da174f","title":"Countries of the world (timed)","subtitle":"10 countries to find on the globe","template":"play/map-pin","requires":{"template":"^1.0.0"},"domain":"countries","tags":["countries","map","geography","world","timed"],"difficulty":3,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}

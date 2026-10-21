@@ -1,0 +1,1 @@
+{"id":"climate-cities-europe-lvl4-2ff0bd","title":"Large cities of Europe (hard)","subtitle":"10 large cities to find on the map","template":"play/map-pin","requires":{"template":"^1.0.0"},"domain":"climate","tags":["cities","map","geography","europe"],"region":["europe"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}

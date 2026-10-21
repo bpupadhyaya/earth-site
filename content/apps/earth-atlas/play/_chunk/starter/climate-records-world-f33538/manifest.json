@@ -1,0 +1,1 @@
+{"id":"climate-records-world-f33538","title":"Temperature records of the world","subtitle":"6 questions","template":"play/quiz","requires":{"template":"^1.2.0"},"domain":"climate","tags":["climate","records","weather","world"],"difficulty":3,"age":"all","entitlement":"free","languages":["en"],"minutes":2,"created":"2026-10-12"}

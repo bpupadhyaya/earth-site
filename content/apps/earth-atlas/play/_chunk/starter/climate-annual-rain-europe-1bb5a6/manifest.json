@@ -1,0 +1,1 @@
+{"id":"climate-annual-rain-europe-1bb5a6","title":"Cities of Europe: order by rainfall","subtitle":"12 cities, 2 rounds of 5","template":"play/sort","requires":{"template":"^1.0.0"},"domain":"climate","tags":["climate","cities","sorting","rainfall","europe"],"region":["europe"],"difficulty":3,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}

@@ -333,3 +333,24 @@ section { padding-block: clamp(1.5rem, 4vw, 3rem); }
 body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
 body > main { flex: 1 0 auto; }
 body > .site-footer { margin-top: auto; flex-shrink: 0; }
+
+/* Apps: module cards, app page, game cards */
+.grid--apps { grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); }
+.grid--games { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.card--app { padding: 0; overflow: hidden; gap: 0; }
+.card--app a.cover { display: block; }
+.card--app .app-feature { display: block; width: 100%; height: auto; aspect-ratio: 1024 / 500; object-fit: cover; background: var(--surface-2); }
+.card--app .app-head { padding: .9rem 1.1rem .2rem; }
+.card--app .blurb, .card--app .app-meta, .card--app .actions { margin-inline: 1.1rem; }
+.card--app .actions { margin-bottom: 1.1rem; }
+.app-head { display: flex; align-items: center; gap: .75rem; }
+.app-head h1, .app-head h3 { margin: 0; line-height: 1.2; }
+.app-icon { width: 3.5rem; height: 3.5rem; border-radius: 22%; flex: none; box-shadow: var(--shadow); }
+.app-icon--lg { width: 5.25rem; height: 5.25rem; }
+.app-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-block: .5rem; }
+.app-hero { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; margin-block: 1rem 2rem; }
+.app-feature--page { width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--shadow); }
+.app-links { margin: .25rem 0 0; }
+.card--game { align-items: flex-start; }
+.game-icon { width: 4rem; height: 4rem; border-radius: 22%; }
+@media (max-width: 52rem) { .app-hero { grid-template-columns: 1fr; } }

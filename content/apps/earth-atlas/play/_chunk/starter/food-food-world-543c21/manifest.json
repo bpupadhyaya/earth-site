@@ -1,0 +1,1 @@
+{"id":"food-food-world-543c21","title":"Which food comes from here? Around the world","subtitle":"10 of 100 foods, drawn at random each play","template":"play/atlas","requires":{"template":"^1.0.0"},"domain":"food","tags":["food","cuisine","picture-game","food-origin","world"],"difficulty":1,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-19"}

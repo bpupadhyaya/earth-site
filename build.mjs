@@ -10,6 +10,8 @@ const OUT = join(ROOT, '_site');
 const site = JSON.parse(readFileSync(join(ROOT, 'content/site.json'), 'utf8'));
 const domains = JSON.parse(readFileSync(join(ROOT, 'content/domains.json'), 'utf8'));
 const projects = loadProjects();
+const appsDoc = existsSync(join(ROOT, 'content/apps.json')) ? JSON.parse(readFileSync(join(ROOT, 'content/apps.json'), 'utf8')) : { apps: [] };
+const apps = appsDoc.apps;
 const BASE = site.basePath || '/';
 const PAGE_SIZE = 100;
 const DOCS_PER_CHUNK = 500;
@@ -135,6 +137,21 @@ function paginate(items, basePath, renderPage) {
   }
 }
 
+
+// ---------- Apps (module cards; content/apps.json, images and the browser demo under content/apps/<id>/) ----------
+// Honest states: status "review" = submitted to the store, not yet public (no store link); "live" needs stores.googlePlay to be set (tools/flip-app-live.mjs).
+const appHref = a => `apps/${a.id}/`;
+const isLive = a => a.status === 'live' && a.stores && a.stores.googlePlay;
+const statusBadge = a => isLive(a) ? `<span class="badge">Available on Google Play</span>` : `<span class="badge badge--coming">In review on Google Play</span>`;
+const appActions = a => `<div class="actions">${a.demo ? `<a class="btn" href="${url(a.demo)}">Play the free browser demo</a>` : ''}${isLive(a) ? `<a class="btn btn--ghost" href="${esc(a.stores.googlePlay)}" rel="noopener">Get it on Google Play</a>` : ''}</div>`;
+const appCard = a => `<li class="card card--app"><a class="cover" href="${url(appHref(a))}"><img class="app-feature" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="1024" height="500" loading="lazy" decoding="async"><div class="app-head"><img class="app-icon" src="${url(a.icon)}" alt="" width="56" height="56" loading="lazy" decoding="async"><h3>${esc(a.name)}</h3></div></a>
+<p class="blurb">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)} · ${a.games.length} games</span></p>${appActions(a)}</li>`;
+const gameCard = (a, g) => `<li class="card card--game"><img class="game-icon" src="${url(`apps/${a.id}/img/${g.id}.png`)}" alt="" width="64" height="64" loading="lazy" decoding="async"><h3>${esc(g.title)}</h3><p class="blurb">${esc(g.blurb)}</p><div class="count">${g.free ? 'Free to play' : 'One-time purchase in the app'}</div></li>`;
+const appsSection = apps.length ? `<section aria-labelledby="apps-h">
+<div class="section-head"><h2 id="apps-h">Apps</h2><a href="${url('apps/')}">All apps</a></div>
+<ul class="grid grid--apps">${apps.map(appCard).join('')}</ul>
+</section>` : '';
+
 // Interactive globe: places are curated in content/places.json (sources listed there); the canvas globe is built client-side by src/globe.js.
 const placesDoc = JSON.parse(readFileSync(join(ROOT, 'content/places.json'), 'utf8'));
 const topicTitles = new Map(domains.flatMap(d => d.topics.map(t => [t.slug, t.title])));
@@ -163,6 +180,7 @@ ${searchForm()}
 </div>
 ${globeStage}
 </div>
+${appsSection}
 <section aria-labelledby="explore-h">
 <div class="section-head"><h2 id="explore-h">Explore by domain</h2><a href="${url('domains/')}">All domains</a></div>
 <ul class="grid">${domains.map(d => `<li class="card card--domain"><a class="cover" href="${url(`domains/${d.slug}/`)}"><h3>${esc(d.title)}</h3></a><p class="blurb">${esc(d.blurb)}</p><div class="count">${d.topics.length} topics · ${byDomain.get(d.slug).length.toLocaleString()} projects</div></li>`).join('')}</ul>
@@ -172,6 +190,23 @@ ${globeStage}
 <ul class="principles">${site.principles.map(p => `<li><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></li>`).join('')}</ul>
 </section>
 </div>` }));
+
+// Apps index and app pages
+if (apps.length) {
+  write('apps/index.html', layout({ title: 'Apps', description: 'Earth apps for your phone: games about our planet that work offline.', path: 'apps/', current: 'apps/', body: `<div class="wrap"><p class="breadcrumb"><a href="${url('')}">Home</a> › Apps</p><h1>Apps</h1><p class="lede muted">Games about our planet for your phone. Each one works offline once installed.</p>
+<ul class="grid grid--apps">${apps.map(appCard).join('')}</ul></div>` }));
+  for (const a of apps) {
+    write(`apps/${a.id}/index.html`, layout({ title: a.name, description: a.tagline, path: appHref(a), current: 'apps/', body: `<div class="wrap">
+<p class="breadcrumb"><a href="${url('')}">Home</a> › <a href="${url('apps/')}">Apps</a> › ${esc(a.name)}</p>
+<div class="app-hero"><img class="app-feature app-feature--page" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="1024" height="500" decoding="async">
+<div class="app-hero-text"><div class="app-head"><img class="app-icon app-icon--lg" src="${url(a.icon)}" alt="" width="84" height="84" decoding="async"><h1>${esc(a.name)}</h1></div>
+<p class="lede">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)}</span></p>${appActions(a)}
+<p class="muted app-links"><a href="${esc(a.privacy)}">Privacy policy</a> · <a href="${esc(a.support)}">App support</a></p></div></div>
+<section aria-labelledby="about-h"><h2 id="about-h">About the app</h2>${a.about.map(t => `<p>${esc(t)}</p>`).join('')}<p>${esc(a.pricing)}</p>${a.demo ? `<p class="muted">The browser demo runs the real app. Capital Cities plays in full; the other ten games show what they are and how they work, and are unlocked in the app on Android.</p>` : ''}</section>
+<section aria-labelledby="games-h"><h2 id="games-h">The ${a.games.length} games</h2><ul class="grid grid--games">${a.games.map(g => gameCard(a, g)).join('')}</ul></section>
+</div>` }));
+  }
+}
 
 // Domains index
 write('domains/index.html', layout({ title: 'Domains', path: 'domains/', current: 'domains/', body: `<div class="wrap"><p class="breadcrumb"><a href="${url('')}">Home</a> › Domains</p><h1>Domains</h1>
@@ -237,6 +272,7 @@ const docs = [];
 const addDoc = (t, b, u, k, s, extra = '') => docs.push({ id: docs.length, t, b, u, k, s, text: [t, b, k, extra].join(' ') });
 for (const d of domains) addDoc(d.title, d.blurb, `domains/${d.slug}/`, 'Domain', '');
 for (const [slug, { topic, domain }] of topicIndex) addDoc(topic.title, topic.blurb, `topics/${slug}/`, `Topic · ${domain.title}`, '');
+for (const a of apps) { addDoc(a.name, a.tagline, appHref(a), 'App', isLive(a) ? 'live' : 'review', a.games.map(g => g.title).join(' ')); for (const g of a.games) addDoc(g.title, g.blurb, appHref(a), `Game · ${a.name}`, g.free ? 'free' : '', ''); }
 for (const p of projects) addDoc(p.title, p.blurb, `projects/${p.id}/`, `Project · ${(domains.find(x => x.slug === p.domain) || {}).title || ''}`, p.status || 'coming', [...(p.tags || []), ...(p.regions || []), ...(p.topics || [])].join(' '));
 const norm = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s-]/g, ' ');
 const shards = new Map();
@@ -249,7 +285,7 @@ for (let i = 0; i * DOCS_PER_CHUNK < docs.length; i++) write(`search/d/${i}.json
 write('search/manifest.json', JSON.stringify({ docsPerChunk: DOCS_PER_CHUNK, chunks: Math.ceil(docs.length / DOCS_PER_CHUNK), docs: docs.length, shards: [...shards.keys()].sort(), built: now }));
 
 // ---------- Sitemaps, robots, assets ----------
-const urls = ['', 'domains/', 'search/', 'about/', ...domains.map(d => `domains/${d.slug}/`), ...[...topicIndex.keys()].map(s => `topics/${s}/`), ...projects.map(p => `projects/${p.id}/`)];
+const urls = ['', 'apps/', ...apps.map(appHref), 'domains/', 'search/', 'about/', ...domains.map(d => `domains/${d.slug}/`), ...[...topicIndex.keys()].map(s => `topics/${s}/`), ...projects.map(p => `projects/${p.id}/`)];
 const SM = 45000; const smFiles = [];
 for (let i = 0; i * SM < urls.length; i++) {
   const name = urls.length > SM ? `sitemap-${i + 1}.xml` : 'sitemap.xml'; smFiles.push(name);
@@ -267,6 +303,7 @@ cpSync(join(ROOT, 'content/mark-land.json'), join(OUT, 'assets/mark-land.json'))
 mkdirSync(join(OUT, 'assets/vendor'), { recursive: true }); mkdirSync(join(OUT, 'assets/data'), { recursive: true });
 for (const f of ['d3-array.min.js', 'd3-geo.min.js', 'topojson-client.min.js', 'LICENSE']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/vendor', f));
 for (const f of ['countries-110m.json', 'countries-50m.json']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/data', f));
+for (const a of apps) { const src = join(ROOT, 'content/apps', a.id); if (existsSync(src)) cpSync(src, join(OUT, 'apps', a.id), { recursive: true }); }
 writeFileSync(join(OUT, 'assets/places.json'), JSON.stringify(placesOut));
 writeFileSync(join(OUT, 'assets/icon.svg'), markFile);
 writeFileSync(join(OUT, 'assets/mark.svg'), markFile);

@@ -6,14 +6,39 @@
   "basePath": "/earth-site/",
   "language": "en",
   "nav": [
-    { "label": "Explore", "href": "domains/" },
-    { "label": "Search", "href": "search/" },
-    { "label": "About", "href": "about/" }
+    {
+      "label": "Apps",
+      "href": "apps/"
+    },
+    {
+      "label": "Explore",
+      "href": "domains/"
+    },
+    {
+      "label": "Search",
+      "href": "search/"
+    },
+    {
+      "label": "About",
+      "href": "about/"
+    }
   ],
   "principles": [
-    { "title": "Works offline", "text": "Install once, play anywhere. Regular use never needs a connection; content you download stays yours." },
-    { "title": "Light on data", "text": "A project is a few hundred kilobytes. Pictures and sounds arrive when your connection allows, never as a requirement." },
-    { "title": "Real Earth", "text": "Real places, real terrain, real sky at the real time. Every fact is sourced; every image is credited." },
-    { "title": "Easy on the eyes", "text": "Warm colours, generous type, a dark mode and adjustable text size on every page." }
+    {
+      "title": "Works offline",
+      "text": "Install once, play anywhere. Regular use never needs a connection; content you download stays yours."
+    },
+    {
+      "title": "Light on data",
+      "text": "A project is a few hundred kilobytes. Pictures and sounds arrive when your connection allows, never as a requirement."
+    },
+    {
+      "title": "Real Earth",
+      "text": "Real places, real terrain, real sky at the real time. Every fact is sourced; every image is credited."
+    },
+    {
+      "title": "Easy on the eyes",
+      "text": "Warm colours, generous type, a dark mode and adjustable text size on every page."
+    }
   ]
 }

@@ -1,0 +1,1 @@
+{"id":"countries-area-world-close-1f14d7","title":"Sort by area: the world (close values)","subtitle":"3 rounds of 5","template":"play/sort","requires":{"template":"^1.0.0"},"domain":"countries","tags":["countries","geography","sort","area","world","close"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":6,"created":"2026-10-12"}

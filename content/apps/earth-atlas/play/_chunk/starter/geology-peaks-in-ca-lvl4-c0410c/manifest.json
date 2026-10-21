@@ -1,0 +1,1 @@
+{"id":"geology-peaks-in-ca-lvl4-c0410c","title":"Peaks of Canada (hard)","subtitle":"10 peaks to find on the map","template":"play/map-pin","requires":{"template":"^1.0.0"},"domain":"geology","tags":["peaks","map","geology","canada"],"region":["north-america"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}

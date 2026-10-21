@@ -1,0 +1,1 @@
+{"id":"climate-zone-of-city-world-1fc0c9","title":"Climate zones of World","subtitle":"10 questions","template":"play/quiz","requires":{"template":"^1.2.0"},"domain":"climate","tags":["climate","koppen-geiger","cities","world"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}

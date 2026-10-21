@@ -1,0 +1,1 @@
+{"id":"geology-peaks-asia-lvl4-2ce7aa","title":"Peaks of Asia (hard)","subtitle":"10 peaks to find on the map","template":"play/map-pin","requires":{"template":"^1.0.0"},"domain":"geology","tags":["peaks","map","geology","asia"],"region":["asia"],"difficulty":4,"age":"all","entitlement":"free","languages":["en"],"minutes":4,"created":"2026-10-12"}
