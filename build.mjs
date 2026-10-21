@@ -139,11 +139,15 @@ function paginate(items, basePath, renderPage) {
 
 
 // ---------- Apps (module cards; content/apps.json, images and the browser demo under content/apps/<id>/) ----------
-// Honest states: status "review" = submitted to the store, not yet public (no store link); "live" needs stores.googlePlay to be set (tools/flip-app-live.mjs).
+// Honest states, per store: stores.googlePlay / stores.appStore = { state: "review" | "live", url }. "review" = submitted, not yet public (no link);
+// "live" needs the store url (tools/flip-app-live.mjs <app-id> play|apple <url> flips one store at a time).
 const appHref = a => `apps/${a.id}/`;
-const isLive = a => a.status === 'live' && a.stores && a.stores.googlePlay;
-const statusBadge = a => isLive(a) ? `<span class="badge">Available on Google Play</span>` : `<span class="badge badge--coming">In review on Google Play</span>`;
-const appActions = a => `<div class="actions">${a.demo ? `<a class="btn" href="${url(a.demo)}">Play the free browser demo</a>` : ''}${isLive(a) ? `<a class="btn btn--ghost" href="${esc(a.stores.googlePlay)}" rel="noopener">Get it on Google Play</a>` : ''}</div>`;
+const STORES = [['googlePlay', 'Google Play', 'Get it on Google Play', 'In review on Google Play'], ['appStore', 'the App Store', 'Download on the App Store', 'In review on the App Store']];
+const storeLive = (a, k) => Boolean(a.stores && a.stores[k] && a.stores[k].state === 'live' && a.stores[k].url);
+const isLive = a => STORES.some(([k]) => storeLive(a, k));
+const storeLabels = a => STORES.filter(([k]) => a.stores && a.stores[k]).map(([k, , live, review]) => ({ k, live: storeLive(a, k), text: storeLive(a, k) ? live : review, url: storeLive(a, k) ? a.stores[k].url : '' }));
+const statusBadge = a => storeLabels(a).map(b => b.live ? `<a class="badge" href="${esc(b.url)}" rel="noopener">${b.text}</a>` : `<span class="badge badge--coming">${b.text}</span>`).join(' ');
+const appActions = a => `<div class="actions">${a.demo ? `<a class="btn" href="${url(a.demo)}">Play the free browser demo</a>` : ''}</div>`;
 const appCard = (a, first = false) => `<li class="card card--app"><a class="cover" href="${url(appHref(a))}"><img class="app-feature" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="${a.featureW}" height="${a.featureH}"${first ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async"><div class="app-head"><img class="app-icon" src="${url(a.icon)}" alt="" width="56" height="56" loading="lazy" decoding="async"><h3>${esc(a.name)}</h3></div></a>
 <p class="blurb">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)} · ${a.games.length} games</span></p>${appActions(a)}</li>`;
 const gameCard = (a, g) => `<li class="card card--game"><img class="game-icon" src="${url(`apps/${a.id}/img/${g.id}.webp`)}" alt="" width="64" height="64" loading="lazy" decoding="async"><h3>${esc(g.title)}</h3><p class="blurb">${esc(g.blurb)}</p><div class="count">${g.free ? 'Free to play' : 'One-time purchase in the app'}</div></li>`;
@@ -202,7 +206,7 @@ if (apps.length) {
 <div class="app-hero-text"><div class="app-head"><img class="app-icon app-icon--lg" src="${url(a.icon)}" alt="" width="84" height="84" fetchpriority="high" decoding="async"><h1>${esc(a.name)}</h1></div>
 <p class="lede">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)}</span></p>${appActions(a)}
 <p class="muted app-links"><a href="${esc(a.privacy)}">Privacy policy</a> · <a href="${esc(a.support)}">App support</a></p></div></div>
-<section aria-labelledby="about-h"><h2 id="about-h">About the app</h2>${a.about.map(t => `<p>${esc(t)}</p>`).join('')}<p>${esc(a.pricing)}</p>${a.demo ? `<p class="muted">The browser demo runs the real app. Capital Cities plays in full; each of the other ten games can be tried free for 90 seconds of play here, and is unlocked in the app on Android.</p>` : ''}</section>
+<section aria-labelledby="about-h"><h2 id="about-h">About the app</h2>${a.about.map(t => `<p>${esc(t)}</p>`).join('')}<p>${esc(a.pricing)}</p>${a.demo ? `<p class="muted">The browser demo runs the real app. Capital Cities plays in full; each of the other ten games can be tried free for 90 seconds of play here, and is unlocked in the app on iPhone, iPad and Android.</p>` : ''}</section>
 <section aria-labelledby="games-h"><h2 id="games-h">The ${a.games.length} games</h2><ul class="grid grid--games">${a.games.map(g => gameCard(a, g)).join('')}</ul></section>
 </div>` }));
   }
@@ -309,7 +313,10 @@ for (const a of apps) { const src = join(ROOT, 'content/apps', a.id); if (exists
 for (const a of apps) {
   const f = join(OUT, 'apps', a.id, 'play/index.html');
   if (!a.demo || !existsSync(f)) continue;
-  const state = isLive(a) ? `<a class="sn-state" href="${esc(a.stores.googlePlay)}" rel="noopener">Get it on Google Play</a>` : `<span class="sn-state">In review on Google Play</span>`;
+  // compact strip label: both stores in review -> one short line; otherwise each store says its own state
+  const labs = storeLabels(a), short = { googlePlay: 'Google Play', appStore: 'App Store' };
+  const parts = labs.every(b => !b.live) ? [`In review: ${labs.map(b => short[b.k]).join(' · ')}`] : labs.map(b => b.live ? `<a href="${esc(b.url)}" rel="noopener">${b.text}</a>` : `${short[b.k]}: in review`);
+  const state = `<span class="sn-state">${parts.join(' · ')}</span>`;
   const nav = `<nav class="site-nav" aria-label="Earth site"><a class="sn-brand" href="${url('')}">Earth</a><a class="sn-back" href="${url(appHref(a))}"><span aria-hidden="true">←</span> About this app</a>${state}</nav>`;
   writeFileSync(f, readFileSync(f, 'utf8').replace('<!--site-nav-->', nav));
 }

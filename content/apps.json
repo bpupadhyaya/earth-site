@@ -4,10 +4,16 @@
       "id": "earth-atlas",
       "name": "Earth Atlas: Picture Games",
       "tagline": "Play the planet: country maps, flags, animals, rivers and mountains. Offline.",
-      "platforms": "Android",
-      "status": "review",
+      "platforms": "iPhone, iPad & Android",
       "stores": {
-        "googlePlay": ""
+        "googlePlay": {
+          "state": "review",
+          "url": ""
+        },
+        "appStore": {
+          "state": "review",
+          "url": ""
+        }
       },
       "icon": "apps/earth-atlas/img/icon-192.webp",
       "feature": "apps/earth-atlas/img/feature.webp",
@@ -20,7 +26,7 @@
         "Every play draws fresh countries and animals from the whole world, or you can pick a continent. Wrong cards grey out so you can try again. Text size runs from 100% to 300%, and there are colour themes and a reduce-motion setting.",
         "It plays fully offline once installed: no account, no sign-in, no ads and no tracking. Every game lists the sources of its facts, such as Natural Earth and United Nations statistics."
       ],
-      "pricing": "Capital Cities is free to play. Each of the other ten games is a one-time purchase, with no subscription.",
+      "pricing": "Capital Cities is free to play. Each of the other ten games is a one-time purchase, with no subscription. Every other game has a free 90-second preview, in the browser demo here and in app version 1.0.1.",
       "games": [
         {
           "id": "capitals",
