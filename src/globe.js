@@ -125,8 +125,8 @@
   if (window.IntersectionObserver) new IntersectionObserver(function (e) { st.visible = e[0].isIntersecting; if (st.visible) { last = performance.now(); st.dirty = true; } }).observe(host);
 
   // ---------- Geometry helpers ----------
-  function baseR() { return st.size * 0.43; }
-  function cy() { return st.size * 0.47; }
+  function baseR() { return st.size * 0.40; } // a little smaller and lower so the Globe/Flat map switch (top-left) never touches the globe or its halo
+  function cy() { return st.size * 0.54; }
   var PAD = 10;
   function padRight() { return st.size > 420 ? 58 : PAD; } // keep the flat map clear of the control column
   function flatExtent() { return [[PAD, PAD], [st.size - padRight(), st.h - PAD]]; }
