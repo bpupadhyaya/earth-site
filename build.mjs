@@ -84,7 +84,7 @@ const swatch = (a, b) => `<span class="sw" style="background:linear-gradient(135
 const themeMenu = `<div class="theme-menu"><button class="ctl ctl--theme" id="theme-ctl" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="theme-list" aria-label="Colour theme" title="Theme">${swatch('#ffffff', '#2f9e68')}<svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <ul class="theme-list" id="theme-list" role="listbox" aria-label="Colour theme" hidden>${THEMES.map(([v, n, d, a, b]) => `<li role="option" tabindex="-1" data-theme-value="${v}" aria-selected="false">${swatch(a, b)}<span class="t-text"><span class="t-name">${n}</span><span class="t-desc">${d}</span></span><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></li>`).join('')}</ul></div>`;
 
-function layout({ title, description, body, path = '', current = '' }) {
+function layout({ title, description, body, path = '', current = '', head = '' }) {
   const fullTitle = path ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`;
   const canonical = site.url.replace(/\/$/, '') + '/' + path;
   return `<!doctype html>
@@ -100,7 +100,7 @@ function layout({ title, description, body, path = '', current = '' }) {
 <meta name="theme-color" content="#171b1e" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="${esc(fullTitle)}"><meta property="og:description" content="${esc(description || site.description)}"><meta property="og:type" content="website"><meta property="og:url" content="${esc(canonical)}">
 <link rel="icon" href="${url('assets/icon.svg')}" type="image/svg+xml">
-<link rel="stylesheet" href="${url('assets/site.css')}">
+<link rel="stylesheet" href="${url('assets/site.css')}">${head}
 <script>(function(){try{var t=localStorage.getItem('earth.theme')||'nutrisize';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t);var z=parseInt(localStorage.getItem('earth.zoom'),10);if(z>=50&&z<=300)document.documentElement.style.setProperty('--zoom',z/100);}catch(e){}})();</script>
 </head>
 <body>
@@ -144,12 +144,12 @@ const appHref = a => `apps/${a.id}/`;
 const isLive = a => a.status === 'live' && a.stores && a.stores.googlePlay;
 const statusBadge = a => isLive(a) ? `<span class="badge">Available on Google Play</span>` : `<span class="badge badge--coming">In review on Google Play</span>`;
 const appActions = a => `<div class="actions">${a.demo ? `<a class="btn" href="${url(a.demo)}">Play the free browser demo</a>` : ''}${isLive(a) ? `<a class="btn btn--ghost" href="${esc(a.stores.googlePlay)}" rel="noopener">Get it on Google Play</a>` : ''}</div>`;
-const appCard = a => `<li class="card card--app"><a class="cover" href="${url(appHref(a))}"><img class="app-feature" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="1024" height="500" loading="lazy" decoding="async"><div class="app-head"><img class="app-icon" src="${url(a.icon)}" alt="" width="56" height="56" loading="lazy" decoding="async"><h3>${esc(a.name)}</h3></div></a>
+const appCard = (a, first = false) => `<li class="card card--app"><a class="cover" href="${url(appHref(a))}"><img class="app-feature" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="${a.featureW}" height="${a.featureH}"${first ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async"><div class="app-head"><img class="app-icon" src="${url(a.icon)}" alt="" width="56" height="56" loading="lazy" decoding="async"><h3>${esc(a.name)}</h3></div></a>
 <p class="blurb">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)} · ${a.games.length} games</span></p>${appActions(a)}</li>`;
-const gameCard = (a, g) => `<li class="card card--game"><img class="game-icon" src="${url(`apps/${a.id}/img/${g.id}.png`)}" alt="" width="64" height="64" loading="lazy" decoding="async"><h3>${esc(g.title)}</h3><p class="blurb">${esc(g.blurb)}</p><div class="count">${g.free ? 'Free to play' : 'One-time purchase in the app'}</div></li>`;
+const gameCard = (a, g) => `<li class="card card--game"><img class="game-icon" src="${url(`apps/${a.id}/img/${g.id}.webp`)}" alt="" width="64" height="64" loading="lazy" decoding="async"><h3>${esc(g.title)}</h3><p class="blurb">${esc(g.blurb)}</p><div class="count">${g.free ? 'Free to play' : 'One-time purchase in the app'}</div></li>`;
 const appsSection = apps.length ? `<section aria-labelledby="apps-h">
 <div class="section-head"><h2 id="apps-h">Apps</h2><a href="${url('apps/')}">All apps</a></div>
-<ul class="grid grid--apps">${apps.map(appCard).join('')}</ul>
+<ul class="grid grid--apps">${apps.map(a => appCard(a)).join('')}</ul>
 </section>` : '';
 
 // Interactive globe: places are curated in content/places.json (sources listed there); the canvas globe is built client-side by src/globe.js.
@@ -169,7 +169,7 @@ const globeStage = `<div class="globe-stage" id="globe-stage" aria-labelledby="g
 // ---------- Pages ----------
 // Home
 write('index.html', layout({
-  title: site.name, description: site.description, body: `
+  head: apps.length ? `<link rel="prefetch" href="${url('apps/')}" as="document">` : '', title: site.name, description: site.description, body: `
 <div class="wrap">
 <div class="hero">
 <div>
@@ -194,12 +194,12 @@ ${appsSection}
 // Apps index and app pages
 if (apps.length) {
   write('apps/index.html', layout({ title: 'Apps', description: 'Earth apps for your phone: games about our planet that work offline.', path: 'apps/', current: 'apps/', body: `<div class="wrap"><p class="breadcrumb"><a href="${url('')}">Home</a> › Apps</p><h1>Apps</h1><p class="lede muted">Games about our planet for your phone. Each one works offline once installed.</p>
-<ul class="grid grid--apps">${apps.map(appCard).join('')}</ul></div>` }));
+<ul class="grid grid--apps">${apps.map((a, i) => appCard(a, i === 0)).join('')}</ul></div>`, head: apps.length === 1 ? `<link rel="prefetch" href="${url(appHref(apps[0]))}" as="document">` : '' }));
   for (const a of apps) {
     write(`apps/${a.id}/index.html`, layout({ title: a.name, description: a.tagline, path: appHref(a), current: 'apps/', body: `<div class="wrap">
 <p class="breadcrumb"><a href="${url('')}">Home</a> › <a href="${url('apps/')}">Apps</a> › ${esc(a.name)}</p>
-<div class="app-hero"><img class="app-feature app-feature--page" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="1024" height="500" decoding="async">
-<div class="app-hero-text"><div class="app-head"><img class="app-icon app-icon--lg" src="${url(a.icon)}" alt="" width="84" height="84" decoding="async"><h1>${esc(a.name)}</h1></div>
+<div class="app-hero"><img class="app-feature app-feature--page" src="${url(a.feature)}" alt="${esc(a.featureAlt || a.name)}" width="${a.featureW}" height="${a.featureH}" fetchpriority="high" decoding="async">
+<div class="app-hero-text"><div class="app-head"><img class="app-icon app-icon--lg" src="${url(a.icon)}" alt="" width="84" height="84" fetchpriority="high" decoding="async"><h1>${esc(a.name)}</h1></div>
 <p class="lede">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)}</span></p>${appActions(a)}
 <p class="muted app-links"><a href="${esc(a.privacy)}">Privacy policy</a> · <a href="${esc(a.support)}">App support</a></p></div></div>
 <section aria-labelledby="about-h"><h2 id="about-h">About the app</h2>${a.about.map(t => `<p>${esc(t)}</p>`).join('')}<p>${esc(a.pricing)}</p>${a.demo ? `<p class="muted">The browser demo runs the real app. Capital Cities plays in full; the other ten games show what they are and how they work, and are unlocked in the app on Android.</p>` : ''}</section>
@@ -304,6 +304,15 @@ mkdirSync(join(OUT, 'assets/vendor'), { recursive: true }); mkdirSync(join(OUT, 
 for (const f of ['d3-array.min.js', 'd3-geo.min.js', 'topojson-client.min.js', 'LICENSE']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/vendor', f));
 for (const f of ['countries-110m.json', 'countries-50m.json']) cpSync(join(ROOT, 'src/vendor', f), join(OUT, 'assets/data', f));
 for (const a of apps) { const src = join(ROOT, 'content/apps', a.id); if (existsSync(src)) cpSync(src, join(OUT, 'apps', a.id), { recursive: true }); }
+
+// Browser demo: replace the nav placeholder with a slim, status-aware link strip back to the site (the demo's own page is static).
+for (const a of apps) {
+  const f = join(OUT, 'apps', a.id, 'play/index.html');
+  if (!a.demo || !existsSync(f)) continue;
+  const state = isLive(a) ? `<a class="sn-state" href="${esc(a.stores.googlePlay)}" rel="noopener">Get it on Google Play</a>` : `<span class="sn-state">In review on Google Play</span>`;
+  const nav = `<nav class="site-nav" aria-label="Earth site"><a class="sn-brand" href="${url('')}">Earth</a><a class="sn-back" href="${url(appHref(a))}"><span aria-hidden="true">←</span> About this app</a>${state}</nav>`;
+  writeFileSync(f, readFileSync(f, 'utf8').replace('<!--site-nav-->', nav));
+}
 writeFileSync(join(OUT, 'assets/places.json'), JSON.stringify(placesOut));
 writeFileSync(join(OUT, 'assets/icon.svg'), markFile);
 writeFileSync(join(OUT, 'assets/mark.svg'), markFile);

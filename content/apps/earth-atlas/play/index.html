@@ -5,9 +5,88 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Earth Atlas: Picture Games (browser demo)</title>
 <link rel="stylesheet" href="./shell.css">
+<style>
+:root{--site-nav-h:34px}
+.site-nav{position:sticky;top:0;z-index:50;box-sizing:border-box;height:var(--site-nav-h);display:flex;align-items:center;gap:.9rem;padding:0 max(.75rem,env(safe-area-inset-left));background:#0b1b2b;color:#e8eef5;font:600 13px/1 system-ui,-apple-system,sans-serif;border-bottom:1px solid rgba(255,255,255,.14)}
+.site-nav a{color:#e8eef5;text-decoration:none;white-space:nowrap}.site-nav a:hover,.site-nav a:focus-visible{text-decoration:underline}
+.site-nav .sn-brand{letter-spacing:.18em;text-transform:uppercase}.site-nav .sn-state{margin-left:auto;font-weight:500;opacity:.8;white-space:nowrap}
+@media (max-width:420px){.site-nav .sn-state{display:none}}
+.ea-app{min-height:calc(100vh - var(--site-nav-h))!important;min-height:calc(100dvh - var(--site-nav-h))!important}
+.boot-note{margin:0;padding:3rem 1.25rem;text-align:center;font:600 17px/1.5 system-ui,-apple-system,sans-serif;color:#e8eef5}
+.ea-logo{cursor:pointer}
+</style>
+<script>document.addEventListener('click',function(e){var t=e.target;if(t&&t.closest&&t.closest('.ea-brand .ea-logo'))location.href='../../../';});</script>
+<link rel="modulepreload" href="./boot.mjs">
+<link rel="modulepreload" href="./native.mjs">
+<link rel="modulepreload" href="./engine/app/start.mjs">
+<link rel="modulepreload" href="./engine/core/packstore.mjs">
+<link rel="modulepreload" href="./engine/core/kv.mjs">
+<link rel="modulepreload" href="./engine/core/schema.mjs">
+<link rel="modulepreload" href="./engine/core/integrity.mjs">
+<link rel="modulepreload" href="./engine/core/hash.mjs">
+<link rel="modulepreload" href="./engine/core/library.mjs">
+<link rel="modulepreload" href="./engine/core/catalog/catalog.mjs">
+<link rel="modulepreload" href="./engine/core/pack.mjs">
+<link rel="modulepreload" href="./engine/core/template.mjs">
+<link rel="modulepreload" href="./engine/core/screen.mjs">
+<link rel="modulepreload" href="./engine/core/settings.mjs">
+<link rel="modulepreload" href="./engine/core/entitlements.mjs">
+<link rel="modulepreload" href="./engine/payments/index.mjs">
+<link rel="modulepreload" href="./engine/payments/debug.mjs">
+<link rel="modulepreload" href="./engine/ui/app.mjs">
+<link rel="modulepreload" href="./engine/ui/render-dom.mjs">
+<link rel="modulepreload" href="./engine/ui/themes.mjs">
+<link rel="modulepreload" href="./engine/ui/atlas-draw.mjs">
+<link rel="modulepreload" href="./engine/ui/chrome-css.mjs">
+<link rel="modulepreload" href="./engine/ui/flight-hud.mjs">
+<link rel="modulepreload" href="./engine/ui/dom.mjs">
+<link rel="modulepreload" href="./engine/ui/views.mjs">
+<link rel="modulepreload" href="./engine/ui/growth.mjs">
+<link rel="modulepreload" href="./engine/core/share.mjs">
+<link rel="modulepreload" href="./engine/core/rng.mjs">
+<link rel="modulepreload" href="./engine/ui/icons.mjs">
+<link rel="modulepreload" href="./engine/ui/player.mjs">
+<link rel="modulepreload" href="./engine/core/env.mjs">
+<link rel="modulepreload" href="./engine/ui/gallery.mjs">
+<link rel="modulepreload" href="./engine/ui/scene-plate.mjs">
+<link rel="modulepreload" href="./engine/ui/flow.mjs">
+<link rel="modulepreload" href="./engine/ui/controls.mjs">
+<link rel="modulepreload" href="./engine/ui/game.mjs">
+<link rel="modulepreload" href="./engine/ui/course.mjs">
+<link rel="modulepreload" href="./engine/core/course.mjs">
+<link rel="modulepreload" href="./engine/render/index.mjs">
+<link rel="modulepreload" href="./engine/render/renderer.mjs">
+<link rel="modulepreload" href="./engine/render/handle.mjs">
+<link rel="modulepreload" href="./engine/render/geo.mjs">
+<link rel="modulepreload" href="./engine/render/camera.mjs">
+<link rel="modulepreload" href="./engine/render/light.mjs">
+<link rel="modulepreload" href="./engine/astro/sun.mjs">
+<link rel="modulepreload" href="./engine/astro/moon.mjs">
+<link rel="modulepreload" href="./engine/astro/time.mjs">
+<link rel="modulepreload" href="./engine/render/scene.mjs">
+<link rel="modulepreload" href="./engine/render/terrain.mjs">
+<link rel="modulepreload" href="./engine/render/surface.mjs">
+<link rel="modulepreload" href="./engine/render/shapes.mjs">
+<link rel="modulepreload" href="./engine/render/overlays.mjs">
+<link rel="modulepreload" href="./engine/render/labels.mjs">
+<link rel="modulepreload" href="./engine/render/cockpit-frame.mjs">
+<link rel="modulepreload" href="./engine/render/governor.mjs">
+<link rel="modulepreload" href="./engine/render/webgl.mjs">
+<link rel="modulepreload" href="./engine/render/draw2d.mjs">
+<link rel="modulepreload" href="./engine/render/shaders.mjs">
+<link rel="modulepreload" href="./engine/render/canvas2d.mjs">
+<link rel="modulepreload" href="./engine/world/basemap.mjs">
+<link rel="modulepreload" href="./engine/world/mesh.mjs">
+<link rel="modulepreload" href="./engine/world/addressing.mjs">
+<link rel="modulepreload" href="./engine/net/assetpacks.mjs">
+<link rel="modulepreload" href="./templates/play/atlas/template.mjs">
+<link rel="modulepreload" href="./templates/play/atlas/schema.mjs">
+<link rel="preload" href="./engine/world/data/basemap.ebm" as="fetch" crossorigin>
+
 </head>
 <body>
-<div id="app" aria-live="polite"></div>
+<!--site-nav-->
+<div id="app" aria-live="polite"><p class="boot-note">Loading Earth Atlas…</p></div>
 <script type="module" src="./boot.mjs"></script>
 </body>
 </html>
