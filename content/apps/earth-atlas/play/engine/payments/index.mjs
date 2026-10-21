@@ -9,7 +9,9 @@
 //   pay.product(entry)  -> { id, price, perGame: true } | null     (sync, from the cache; the store's price, else the configured price tier in USD)
 //   await pay.purchase(productId)       -> { ok: true } | { ok: false, reason: 'cancelled'|'pending'|'failed'|'unavailable' }
 //   await pay.restore()                 -> { ok: true } | { ok: false, reason }
-//   pay.preview(entry)                  -> monetization.preview === true (false by default: a locked game never plays as a free preview)
+//   pay.preview(entry)                  -> monetization.preview === true and the entry is for sale (false by default: a locked game never plays as a free preview);
+//                                          engine/app wraps it so it is also false once the game's free time is used (engine/core/preview.mjs)
+//   pay.previewMs                       the free preview length: monetization.previewSeconds (default 90) in ms
 //   pay.subscribe(fn) -> off            fn() after the owned receipts changed outside the app ('store.updated')
 // The UI hooks (engine/ui/app.mjs cfg.payments) are product / purchase / restore / preview.
 
@@ -62,7 +64,8 @@ export function createPayments(o) {
       if (!id) return null;
       return { id, price: prices.get(id)?.price || fallback, perGame: true };
     },
-    preview: () => mon.preview === true,
+    preview: entry => mon.preview === true && (entry?.e ?? 'free') !== 'free',
+    previewMs: Number.isFinite(Number(mon.previewSeconds)) && Number(mon.previewSeconds) > 0 ? Math.round(Number(mon.previewSeconds) * 1000) : 90 * 1000,
     /** Ask the store for prices and for what the device owns. Works with no store (nothing changes). Never throws. */
     async refresh() {
       await loadPrices();

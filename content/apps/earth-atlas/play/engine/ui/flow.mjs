@@ -58,7 +58,7 @@ export function unlockBlock(ctx, info, state, reload, gameTitle) {
   const game = product?.perGame ? (gameTitle || (Array.isArray(cfg.games) ? cfg.games : []).find(g => g?.id === info.entry.gm)?.title || info.title) : '';
   const kids = [h('p.ea-msg', { data: { state } }, game && state === 'locked' ? S('unlock.game', 'Unlock {game} once to play it and learn from it. One purchase, no subscription, and it then works offline.', { game }) : S('unlock.' + state, STATE[state] || STATE.locked))];
   const preview = state !== 'free' && !['owned', 'pass', 'grace', 'debug'].includes(state) && canPreview(ctx, info.entry);
-  if (preview) kids.push(h('p.ea-note', null, S('previewNote', 'You can play a free preview now. The unlock opens the whole game.')));
+  if (preview) kids.push(h('p.ea-note', { data: { preview: 'offer' } }, S('previewNote', 'You can play a free preview now. The unlock opens the whole game.') + ' ' + S('previewLen', 'The preview is {s} seconds of play.', { s: Math.round((cfg.previewMs || 90000) / 1000) })));
   if (!['free', 'owned', 'pass', 'grace', 'debug'].includes(state)) {
     const price = product && typeof product.price === 'string' && product.price.trim() ? product.price.trim() : '';
     const label = game ? (price ? S('unlockGamePrice', 'Unlock {game}: {price}', { game, price }) : S('unlockGame', 'Unlock {game}', { game }))

@@ -26,12 +26,12 @@ const MAX_DEPTH = 24;
 /**
  * @typedef {{ textZoom?: number, lowData?: boolean, reducedMotion?: boolean, theme?: string }} Settings
  * @typedef {{ get(): Settings, set(patch: Settings): void, subscribe(fn: (s: Settings) => void): () => void }} SettingsStore
- * @typedef {{ status: 'ready'|'not-downloaded'|'downloading'|'locked'|'error', pack?: any, progress?: number }} OpenResult
- * @typedef {{ open(id: string): OpenResult | Promise<OpenResult>, request(id: string): any, pin(id: string): any, unpin?(id: string): any, evict(id: string): any,
+ * @typedef {{ status: 'ready'|'not-downloaded'|'downloading'|'locked'|'error', pack?: any, progress?: number, preview?: boolean, previewMs?: number }} OpenResult
+ * @typedef {{ open(id: string, opts?: { preview?: boolean }): OpenResult | Promise<OpenResult>, request(id: string): any, previewSpend?(game: string, ms: number): any, previewLeft?(game: string): number, pin(id: string): any, unpin?(id: string): any, evict(id: string): any,
  *   usage(): any, watch?(id: string, cb: () => void): () => void }} PackStore
  * @typedef {{ get(id: string): any, set(id: string, rec: any): any, recent(n: number): any }} ProgressStore
  * @typedef {{ root: any, catalog: any, packs: PackStore, templates: { load(id: string): any }, settings?: SettingsStore, progress?: ProgressStore,
- *   env?: { now?: () => number, raf?: (cb: () => void) => any, caf?: (id: any) => void, onBack?: (handler: () => boolean) => (() => void) | void, openLink?: (url: string) => void, share?: (text: string) => void, pixelRatio?: number, log?: (m: any) => void },
+ *   env?: { now?: () => number, raf?: (cb: () => void) => any, caf?: (id: any) => void, every?: (fn: () => void, ms: number) => any, onBack?: (handler: () => boolean) => (() => void) | void, openLink?: (url: string) => void, share?: (text: string) => void, pixelRatio?: number, log?: (m: any) => void },
  *   strings?: Record<string, string> | ((key: string, fallback: string) => string), render?: { createRenderer(canvas: any, opts: any): any }, quality?: string,
  *   categories?: { id: string, label: string }[], downloads?: boolean, compat?: Record<string, number>, featured?: () => any, related?: (entry: any) => any,
  *   credits?: { title: string, url?: string, license?: string, note?: string }[], about?: { name?: string, version?: string }, theme?: { preset: string, accent?: string },
@@ -41,6 +41,7 @@ const MAX_DEPTH = 24;
  *   games?: { id: string, title: string, tagline?: string, about?: string[], howTo?: string[], rules?: string[], tint?: string, unit?: string, n?: number, learnN?: number, rep?: string, kind?: string, icon?: string | null,
  *     filter?: any, learnFilter?: any, sections?: { label: string, tag?: string, template?: string }[], learnSections?: { label: string, tag: string }[] }[],
  *   brand?: { logo?: { dark?: string, light?: string } },
+ *   previewMs?: number,
  *   payments?: { product?: (entry: any) => { id: string, price?: string } | null, purchase?: (productId: string) => any, restore?: () => any, preview?: (entry: any) => boolean } }} AppConfig
  */
 

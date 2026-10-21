@@ -169,6 +169,9 @@ export const APP_CSS = `
 .ea-item { background: color-mix(in srgb, var(--card) 82%, transparent); }
 .ea-watch { width: 100%; max-width: 48em; margin: 0 auto; padding: 0.8em 1em; display: flex; flex-direction: column; gap: 0.6em; background: var(--card); border-bottom: 2px solid var(--accent); }
 .ea-narr { margin: 0; font-size: 1.05em; font-weight: 600; }
+.ea-pv { width: 100%; max-width: 48em; margin: 0 auto; padding: 0.45em 1em; display: flex; align-items: center; justify-content: space-between; gap: 0.8em; background: var(--card); border-bottom: 2px solid var(--accent); font-size: 0.95em; }
+.ea-pv[hidden] { display: none; }
+.ea-pv-t { font-weight: 600; }
 .ea-immersive .ea-bar { max-width: none; }
 .ea-bar > .ea-btn:first-child { border-radius: 999px; border-color: transparent; background: color-mix(in srgb, var(--fg) 12%, transparent); }
 /* fluid layout (docs/PRESENTATION-FLOW.md "Fluid layout and full screen"): everything is em, so one type scale (--fs) grows the whole chrome on tablets; breakpoints are viewport width and height, never the device; text size 200% and up keeps scale 1 */

@@ -43,7 +43,7 @@ async function progressOf(ctx, g) {
 /** Straight into play (owner rule 2026-10-16: no picker, quiz or lesson first): the unfinished mission to continue, else the
  * easiest not-yet-finished pack of the game's first group, else its first pack. One bounded catalog page; falls back to the picker. */
 async function playNow(ctx, g, preview) {
-  if (gameLock(ctx, g)) return ctx.go('game', { id: g.id }); // a game for sale that is not owned: its About with the unlock, never a play or a preview
+  if (gameLock(ctx, g) && !preview) return ctx.go('game', { id: g.id }); // a game for sale that is not owned: its About with the unlock; only the About's free preview button goes on (the player counts the preview time)
   try {
     const s = g.sections[0], filter = s ? { ...g.filter, ...(s.tag ? { tag: s.tag } : {}), ...(s.template ? { template: s.template } : {}) } : g.filter;
     const items = [...(await ctx.catalog.list({ ...filter, limit: PAGE, compat: ctx.cfg.compat })).items].sort(byLevel);
@@ -107,7 +107,7 @@ export function gameView(ctx) {
 export function gameMenuView(ctx) {
   const { S } = ctx, P = ctx.params;
   return gamePage(ctx, g => g.title, async (g, box) => {
-    if (gameLock(ctx, g)) { ctx.replace('game', { id: g.id }); return; }
+    if (gameLock(ctx, g) && !P.preview) { ctx.replace('game', { id: g.id }); return; }
     const [rep, pr] = await Promise.all([repOf(ctx, g).catch(e => { ctx.log(e); return null; }), progressOf(ctx, g)]);
     let tpl = null;
     try { if (rep?.tp) tpl = await ctx.templates.load(rep.tp); } catch (e) { ctx.log(e); }
@@ -161,7 +161,7 @@ function packGroup(ctx, label, filter, onPlay, state, onFirst) {
 export function levelsView(ctx) {
   const { S } = ctx, P = ctx.params;
   return gamePage(ctx, g => S('levelsOf', '{title}: {unit}', { title: g.title, unit: g.unit }), async (g, box) => {
-    if (gameLock(ctx, g)) { ctx.replace('game', { id: g.id }); return; }
+    if (gameLock(ctx, g) && !P.preview) { ctx.replace('game', { id: g.id }); return; }
     const play = e => ctx.go('pack', { id: e.id, entry: e, preview: P.preview });
     const next = h('div.ea-slot.ea-next'), state = { next: null };
     const first = e => next.replaceChildren(h('button.ea-item.ea-nextup', { type: 'button', data: { next: e.id }, style: styleOf(cardTint(g)), onclick: () => play(e) },

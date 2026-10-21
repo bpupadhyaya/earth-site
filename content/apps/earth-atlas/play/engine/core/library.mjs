@@ -32,7 +32,8 @@ export function compatOf(templates) {
 
 /**
  * @param {{ index: any, readShard: (domain: string, shard: string) => any, store: any, templates: Iterable<any>,
- *   entitlements?: { check(entry: any): { allowed: boolean, via: string | null, reason?: string } }, maxCachedEntries?: number }} opts
+ *   entitlements?: { check(entry: any): { allowed: boolean, via: string | null, reason?: string } }, maxCachedEntries?: number,
+ *   canPreview?: (entry: any) => boolean }} opts   canPreview: a locked game's pack may be opened with open(entry, { preview: true }) (engine/core/preview.mjs)
  */
 export function createLibrary(opts) {
   const templates = new Map([...opts.templates].map(t => [t.id, t]));
@@ -95,11 +96,16 @@ export function createLibrary(opts) {
       if (items.length < limit) items = items.concat(await byKeyword(query, f, limit - items.length, new Set(items.map(e => e.id))));
       return { items: await decorate(items) };
     },
-    /** @param {any} entry a catalog entry */
-    async open(entry) {
+    /** @param {any} entry a catalog entry @param {{ preview?: boolean }} [o] preview: open a locked game's pack as a free preview when `opts.canPreview(entry)` allows it */
+    async open(entry, o = {}) {
       if (!runs(entry)) return { ok: false, state: 'incompatible', reason: templates.has(entry?.tp) ? 'template-too-old' : 'unknown-template' };
-      const ent = allowed(entry);
-      if (!ent.allowed) return { ok: false, state: 'locked', reason: ent.reason || 'locked' };
+      /** @type {any} */ let ent = allowed(entry);
+      if (!ent.allowed) {
+        let free = false;
+        try { free = Boolean(o.preview && opts.canPreview && opts.canPreview(entry)); } catch { free = false; }
+        if (!free) return { ok: false, state: 'locked', reason: ent.reason || 'locked' };
+        ent = { allowed: true, via: 'preview' };
+      }
       const r = await opts.store.openPack(entry);
       if (!r.ok) return r;
       const tpl = templates.get(entry.tp), m = r.pack.manifest;

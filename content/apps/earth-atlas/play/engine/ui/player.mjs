@@ -11,6 +11,7 @@ import { guardInstance } from '../core/template.mjs';
 import { renderScreen, updateScreen } from './render-dom.mjs';
 import { h, btn, size, meter } from './dom.mjs';
 import { entryItem } from './views.mjs';
+import { unlockBlock } from './flow.mjs';
 import { gameOf } from './gallery.mjs';
 import { plateSrc } from './scene-plate.mjs';
 import { playSeed, dayNumber } from '../core/share.mjs';
@@ -25,6 +26,9 @@ const WAIT = {
   'low-data': 'Low data mode is on, so this was not downloaded.',
 };
 const BODY_MS = 500;
+/** Screens that are not play: the free preview clock (a game for sale, engine/core/preview.mjs) does not run on them. */
+const NOT_PLAYING = ['brief', 'briefing', 'intro', 'debrief', 'result', 'pad'];
+const PREVIEW_TICK_MS = 500, PREVIEW_FLUSH_MS = 2000;
 /** A picture-game screen draws its own map: no stock picture above it. */
 const hasAtlas = s => Boolean(s?.body?.some(b => b.atlas));
 
@@ -60,6 +64,10 @@ export function playerView(ctx) {
   // flight input for world screens: shown when the screen's world handle asks for controls or has a pending pick
   const fc = createFlightControls({ canvas, pick: (x, y) => (renderer && renderer.pick ? renderer.pick(x, y) : null), strings: S, settings: { handed: ctx.settings.get().handed } });
   const offSettings = ctx.settings.subscribe ? ctx.settings.subscribe(v => fc.settings({ handed: v.handed })) : null;
+  // free preview of a game for sale: a small time-left bar, the clock below, the unlock gate when the free time is spent
+  /** @type {any} */ let pv = null, pvOpenLeft = null;
+  const pvText = h('span.ea-pv-t'), pvBar = h('div.ea-pv', { hidden: true, role: 'status', data: { preview: 'bar' } }, pvText,
+    btn(S('pv.unlock', 'Unlock'), () => ctx.go('game', { id: entry?.gm || id }), '.ea-chip'));
   const srcBtn = h('button.ea-btn', { type: 'button', hidden: true, onclick: () => ctx.go('credits', { pack, cites: [...seen.values()] }) }, S('sources', 'Sources'));
   // the flight screen: while a real-time flight world is shown the canvas is the whole display and the rest is overlay (flight-hud.mjs)
   let flying = false, drawer = false, pickShown = '', layout = null, relayoutAt = 0;
@@ -111,13 +119,14 @@ export function playerView(ctx) {
       /** @type {any} */ let r;
       try { r = await packs.open(id, P.preview ? { preview: true } : undefined); } catch (e) { ctx.log(e); r = { status: 'error' }; }
       if (!ctx.alive() || mine !== seq || inst) return;
-      if (r.status === 'ready' && r.pack) { const fresh = Boolean(P.fresh || watching); P.fresh = false; return start(r.pack, fresh); }
+      if (r.status === 'ready' && r.pack) { const fresh = Boolean(P.fresh || watching); P.fresh = false; pvOpenLeft = r.preview ? Math.max(0, Number(r.previewMs) || 0) : null; return start(r.pack, fresh); }
       if (r.status === 'downloading') {
         watch();
         if (!dl) { const m = meter(S('downloadProgress', 'Download progress')); state(S('downloading', 'Downloading…'), m.el, btn(S('checkAgain', 'Check again'), open)); dl = m; }
         return dl.set(r.progress);
       }
       if (r.status === 'not-downloaded') return state(S('notDownloaded', 'This item is not on this device yet.') + (entry?.kb ? ' ' + S('downloadSize', 'Download size: {size}.', { size: size(entry.kb * 1000) }) : ''), btn(S('download', 'Download'), request, '.ea-go'));
+      if (r.status === 'locked' && P.preview && entry?.gm) return gate(false);
       if (r.status === 'locked') return state(S('locked', 'This item is not unlocked on this device.'), (cfg.onLocked || entry?.gm || entry?.gl) && btn(S('seeOptions', 'See options'), () => (cfg.onLocked ? cfg.onLocked(entry || { id }) : ctx.replace('about', { id, entry }))));
       problem(r.error || r.status);
     })());
@@ -160,7 +169,48 @@ export function playerView(ctx) {
       if (resume) try { inst.restore(rec.snapshot); } catch (e) { ctx.log(e); seed = fresh1(); inst = make(); }
       done = false; acted = kept ? kept.acted : resume; drawn = false; after.replaceChildren(); last = wLast = ctx.now(); wSteps = 0;
       draw(true);
+      if (pvOpenLeft != null && !pv) startPreview(pvOpenLeft);
     } catch (e) { problem(e); }
+  }
+
+  /** True while real play is going on: a play screen (not a menu, intro or result), shown, not paused, not in the background. */
+  const counting = () => Boolean(inst && !paused && !done && lastScreen && !NOT_PLAYING.includes(lastScreen.kind) && !(watching && wPaused) && !(globalThis.document && globalThis.document.hidden));
+  function startPreview(left) {
+    const game = entry?.gm; if (!game || left <= 0) return;
+    pv = { game, left, pend: 0, last: ctx.now(), timer: null };
+    pvBar.hidden = false; pvShow();
+    const every = env.every || (typeof globalThis.setInterval === 'function' ? (f, ms) => globalThis.setInterval(f, ms) : null);
+    if (every) pv.timer = every(pvTick, PREVIEW_TICK_MS);
+  }
+  function pvTick() {
+    if (!pv || !ctx.alive()) return;
+    const t = ctx.now(), dt = Math.max(0, Math.min(t - pv.last, 1500)); pv.last = t;   // a long gap (device asleep) is not play
+    if (counting()) { pv.left -= dt; pv.pend += dt; }
+    pvShow();
+    if (pv.left <= 0) return pvEnd();
+    if (pv.pend >= PREVIEW_FLUSH_MS) pvFlush();
+  }
+  /** Hand the measured play time to the pack store (it keeps the sums); never fails. */
+  function pvFlush() { if (!pv || pv.pend <= 0) return; const ms = pv.pend; pv.pend = 0; try { ctx.track(Promise.resolve(packs.previewSpend && packs.previewSpend(pv.game, ms)).catch(ctx.log)); } catch (e) { ctx.log(e); } }
+  function pvShow() { const sec = Math.max(0, Math.ceil(pv.left / 1000)), txt = S('pv.left', 'Free preview: {m}:{ss} left', { m: Math.floor(sec / 60), ss: String(sec % 60).padStart(2, '0') }); if (pvText.textContent !== txt) pvText.textContent = txt; }
+  function pvStop() { if (pv && pv.timer != null && typeof globalThis.clearInterval === 'function') globalThis.clearInterval(pv.timer); if (pv) pv.timer = null; }
+  /** The free time is spent: keep the play where it is (an unlock resumes it), stop the game and show the gate. */
+  function pvEnd() {
+    pv.left = 0; pvFlush(); pvStop(); stop();
+    if (inst && acted && !watching) save();
+    inst = null; pv = null; pvOpenLeft = null;
+    gate(true);
+  }
+  /** In place of the game: the free preview is over (or was used before); the unlock with its price and Restore purchases. */
+  function gate(over) {
+    stop(); fc.configure(null); canvas.hidden = true; fly(false); after.replaceChildren(); drawn = false; plate.hidden = true; pvBar.hidden = true;
+    const info = { entry: entry || { id }, title: title(), status: 'locked', pack: null };
+    const head = h('h1.ea-h', { tabIndex: -1 }, title());
+    stage.replaceChildren(h('section.ea-state', { data: { gate: 'preview' } }, head,
+      h('p', { role: 'status' }, over ? S('pv.over', 'Your free preview of this game is over. Unlock it to go on where you stopped.') : S('pv.used', 'The free preview of this game has been used. Unlock it to play on.')),
+      unlockBlock(ctx, info, 'locked', () => ctx.replace('pack', { id, entry }), undefined),
+      btn(S('back', 'Back'), () => ctx.back())));
+    head.focus();
   }
 
   function act(actionId) {
@@ -309,10 +359,11 @@ export function playerView(ctx) {
   state(S('loading', 'Loading…'));
   open();
   return {
-    title: title(), ownHeading: true, immersive: true, flush: true, actions: [srcBtn], nodes: [canvas, fc.el, hud.el, hud.backdrop, hud.probe, watchBar, plate, stage, after],
+    title: title(), ownHeading: true, immersive: true, flush: true, actions: [srcBtn], nodes: [canvas, fc.el, hud.el, hud.backdrop, hud.probe, watchBar, pvBar, plate, stage, after],
     pause() { paused = true; if (rafId) caf(rafId); rafId = 0; },
     resume() { paused = false; last = ctx.now(); schedule(); },
     dispose() {
+      pvFlush(); pvStop(); pv = null;
       if (inst && acted && !watching) save();
       if (inst && !watching) try { ctx.params.kept = { seed, acted, snapshot: inst.snapshot() }; } catch (e) { ctx.log(e); }
       stop(); if (off) off(); off = null;

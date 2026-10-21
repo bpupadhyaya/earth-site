@@ -21,6 +21,7 @@
 //                   entitlement check answers allowed (via 'debug'); Settings shows the switch. Without it nothing changes.
 //     icons         optional { url(entry) -> address | null }: the app's own game icons; without it generated tiles are shown
 //     raf, caf      optional frame hooks (default: the platform's)
+//     every         optional (fn, ms) -> handle timer hook for the free-preview clock (default: setInterval); the handle is cleared with clearInterval
 //
 // Content layout it reads (written by the publisher, factory/publish):
 //   chunk "catalog" (install-time): index.json = { version, chunks, shards }, shards/<domain>/<shard>.json
@@ -31,6 +32,7 @@ import { createPackStore } from '../core/packstore.mjs';
 import { createLibrary } from '../core/library.mjs';
 import { loadSettings } from '../core/settings.mjs';
 import { loadEntitlements } from '../core/entitlements.mjs';
+import { loadPreview } from '../core/preview.mjs';
 import { createPayments } from '../payments/index.mjs';
 import { withDebugUnlock } from '../payments/debug.mjs';
 import { readJson, writeJson } from '../core/kv.mjs';
@@ -123,7 +125,15 @@ export async function start(o) {
     payments = createPayments({ native, entitlements, app: { slug: app.slug, monetization: app.monetization }, now });
     await Promise.race([payments.refresh().catch(log), new Promise(done => setTimeout(done, 1500))]);
   }
-  const library = createLibrary({ index, readShard: (domain, shard) => file(CATALOG_CHUNK, `shards/${domain}/${shard}.json`), store, templates, entitlements });
+  // free preview (monetization.preview): real play time per game, spent once per install (engine/core/preview.mjs)
+  const preview = payments && app.monetization?.preview === true ? await loadPreview({ kv, budgetMs: payments.previewMs }) : null;
+  const previewGame = e => (e && typeof e.gm === 'string' ? e.gm : '');
+  if (preview && payments && !o.payments) {
+    const basePreview = payments.preview.bind(payments);
+    payments.preview = entry => basePreview(entry) && Boolean(previewGame(entry)) && preview.left(previewGame(entry)) > 0;
+  }
+  const library = createLibrary({ index, readShard: (domain, shard) => file(CATALOG_CHUNK, `shards/${domain}/${shard}.json`), store, templates, entitlements,
+    canPreview: entry => Boolean(preview && payments?.preview?.(entry) && preview.left(previewGame(entry)) > 0) });
   const progress = await loadProgress(kv);
 
   // The chrome names packs by id; the store works on catalog entries. Remember every entry that passed through a list.
@@ -146,16 +156,20 @@ export async function start(o) {
   const chunkLabel = c => [c.domain ? c.domain[0].toUpperCase() + c.domain.slice(1) : null, c.group].filter(Boolean).join(' · ') || c.id;
 
   const packs = {
-    async open(id) {
+    async open(id, opts) {
       const entry = await entryOf(id);
       if (!entry) return { status: 'error' };
-      const r = await library.open(entry);
-      if (r.ok) return { status: 'ready', pack: r.pack };
+      const r = await library.open(entry, { preview: Boolean(opts && opts.preview) });
+      // a locked game opened as a free preview says so and how much free play time is left
+      if (r.ok) return r.via === 'preview' ? { status: 'ready', pack: r.pack, preview: true, previewMs: preview ? preview.left(previewGame(entry)) : 0 } : { status: 'ready', pack: r.pack };
       if (r.state === 'locked') return { status: 'locked' };
       if (r.state !== 'not-downloaded') { log(`${id}: ${r.state} ${r.reason || ''}`); return { status: 'error' }; }
       const s = r.status || (await store.status(entry.c));
       return ['queued', 'downloading', 'paused'].includes(s.state) ? { status: 'downloading', progress: s.progress || 0 } : { status: 'not-downloaded' };
     },
+    /** Free preview time spent in a game (ms of real play, measured by the player). Resolves the time that is left. */
+    async previewSpend(game, ms) { return preview ? preview.add(game, ms) : 0; },
+    previewLeft(game) { return preview ? preview.left(game) : 0; },
     async request(id) { const entry = await entryOf(id); return entry ? store.request(entry.c) : { accepted: false, reason: 'unknown-chunk' }; },
     watch(id, cb) { let off = () => {}; entryOf(id).then(e => { if (e) off = assets.watch(e.c, cb); }); return () => off(); },
     // The downloads screen lists chunks (the unit the stores deliver); ids there carry a "chunk:" prefix.
@@ -180,13 +194,13 @@ export async function start(o) {
     platform: native.platform, storeUrl: app.storeUrl, siblings: app.siblings,
     // challenge of the day: only games every install of this app version has (the install-time chunks), never locked ones
     daily: async () => { const starter = new Set((index.chunks || []).filter(c => c.delivery === 'install-time').map(c => c.id)); return (await catalog.list({ limit: 200 })).items.filter(e => starter.has(e.c) && !e.locked); },
-    entitlement: entry => entitlements.check(entry), payments, icons: o.icons,
+    entitlement: entry => entitlements.check(entry), payments, previewMs: preview ? preview.budgetMs : 0, icons: o.icons,
     // the games of this app (the publisher's games index) with their icons shipped in www (shells/generate.mjs), and the brand lockups
     games: (Array.isArray(index.games) ? index.games : []).map(g => ({ ...g, learnN: g.learn || 0, learn: undefined, filter: { game: g.id }, learnFilter: g.learn ? { learn: g.id } : null, icon: app.gameIcons?.[g.id] || null, scene: app.gameScenes?.[g.id] || undefined })),
     brand: app.logo ? { logo: app.logo } : undefined,
     debug: debug ? { ...debug, resetPurchases: resetTestPurchases } : undefined, compat: library.compat, theme: app.theme, about: { name: app.name, version: app.version }, credits: [...(app.credits || []), ...(o.credits || [])], services: o.services || {},
     env: {
-      now, raf: o.raf, caf: o.caf, log, pixelRatio: globalThis.devicePixelRatio || 1,
+      now, raf: o.raf, caf: o.caf, every: o.every, log, pixelRatio: globalThis.devicePixelRatio || 1,
       onBack: handler => native.on('back', () => handler() !== false),
       openLink: url => { native.open(url).catch(log); },
       share: text => { native.share(text).catch(log); },

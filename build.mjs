@@ -202,7 +202,7 @@ if (apps.length) {
 <div class="app-hero-text"><div class="app-head"><img class="app-icon app-icon--lg" src="${url(a.icon)}" alt="" width="84" height="84" fetchpriority="high" decoding="async"><h1>${esc(a.name)}</h1></div>
 <p class="lede">${esc(a.tagline)}</p><p class="app-meta">${statusBadge(a)} <span class="muted">${esc(a.platforms)}</span></p>${appActions(a)}
 <p class="muted app-links"><a href="${esc(a.privacy)}">Privacy policy</a> · <a href="${esc(a.support)}">App support</a></p></div></div>
-<section aria-labelledby="about-h"><h2 id="about-h">About the app</h2>${a.about.map(t => `<p>${esc(t)}</p>`).join('')}<p>${esc(a.pricing)}</p>${a.demo ? `<p class="muted">The browser demo runs the real app. Capital Cities plays in full; the other ten games show what they are and how they work, and are unlocked in the app on Android.</p>` : ''}</section>
+<section aria-labelledby="about-h"><h2 id="about-h">About the app</h2>${a.about.map(t => `<p>${esc(t)}</p>`).join('')}<p>${esc(a.pricing)}</p>${a.demo ? `<p class="muted">The browser demo runs the real app. Capital Cities plays in full; each of the other ten games can be tried free for 90 seconds of play here, and is unlocked in the app on Android.</p>` : ''}</section>
 <section aria-labelledby="games-h"><h2 id="games-h">The ${a.games.length} games</h2><ul class="grid grid--games">${a.games.map(g => gameCard(a, g)).join('')}</ul></section>
 </div>` }));
   }
