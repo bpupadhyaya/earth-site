@@ -16,8 +16,8 @@
         }
       },
       "icon": "apps/earth-atlas/img/icon-192.webp",
-      "feature": "apps/earth-atlas/img/feature.webp",
-      "featureAlt": "Earth Atlas: Picture Games: a night-blue globe with country shapes, a flag, an animal and a mountain",
+      "feature": "apps/earth-atlas/img/feature-c.webp",
+      "featureAlt": "Earth Atlas: Picture Games: the app icon, a globe with an orange map pin, and rainbow sticker letters on a map background with picture cards of a country, a mountain and an animal",
       "demo": "apps/earth-atlas/play/",
       "privacy": "https://bpupadhyaya.github.io/privacy-earth-atlas.html",
       "support": "https://bpupadhyaya.github.io/app-support-earth-atlas.html",
@@ -85,8 +85,8 @@
           "blurb": "Launches, flights, expeditions and quakes by country."
         }
       ],
-      "featureW": 800,
-      "featureH": 391
+      "featureW": 1024,
+      "featureH": 500
     }
   ]
 }
