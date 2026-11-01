@@ -24,9 +24,9 @@
       "about": [
         "Earth Atlas: Picture Games is a set of geography games on real maps. See a country on its map and flag, a river's path or a mountain's country, then tap the city, animal, river, mountain, climate or neighbour that belongs to it.",
         "Every play draws fresh countries and animals from the whole world, or you can pick a continent. Wrong cards grey out so you can try again. Text size runs from 100% to 300%, and there are colour themes and a reduce-motion setting.",
-        "It plays fully offline once installed: no account, no sign-in, no ads and no tracking. Every game lists the sources of its facts, such as Natural Earth and United Nations statistics."
+        "It plays offline once installed, with no account or sign-in. The free app shows ads from Google AdMob (with consent choices where required); a one-time Remove ads purchase removes them. Every game lists the sources of its facts, such as Natural Earth and United Nations statistics."
       ],
-      "pricing": "Capital Cities is free to play. Each of the other ten games is a one-time purchase, with no subscription. Every other game has a free 90-second preview, in the browser demo here and in app version 1.0.1.",
+      "pricing": "Free with ads; remove ads with a one-time purchase. Capital Cities is free to play. Each of the other ten games is a one-time purchase, with no subscription. Every other game has a free 90-second preview, in the browser demo here and in app version 1.0.1.",
       "games": [
         {
           "id": "capitals",
